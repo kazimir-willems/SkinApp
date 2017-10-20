@@ -30,23 +30,38 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btn_second)
     void onClickBtnSecond() {
         LayoutInflater factory = LayoutInflater.from(this);
-        final View deleteDialogView = factory.inflate(R.layout.dialog_information, null);
-        final AlertDialog deleteDialog = new AlertDialog.Builder(this).create();
-        deleteDialog.setView(deleteDialogView);
-        deleteDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+        final View informDialogView = factory.inflate(R.layout.dialog_information, null);
+        final AlertDialog informDialog = new AlertDialog.Builder(this).create();
+        informDialog.setView(informDialogView);
+        informDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //your business logic
-                deleteDialog.dismiss();
+                Intent intent = new Intent(MainActivity.this, SecondMainActivity.class);
+
+                startActivity(intent);
+                informDialog.dismiss();
             }
         });
-        deleteDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+        informDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteDialog.dismiss();
+                informDialog.dismiss();
             }
         });
 
-        deleteDialog.show();
+        informDialog.show();
+    }
+
+    @OnClick(R.id.btn_third)
+    void onClickBtnThird() {
+        Intent intent = new Intent(MainActivity.this, ThirdMainActivity.class);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_exit)
+    void onClickBtnExit() {
+        finish();
     }
 }
