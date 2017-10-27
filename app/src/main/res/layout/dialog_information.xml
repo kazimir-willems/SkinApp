@@ -15,11 +15,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"
-                android:text=""/>
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:text="性别"/>
 
             <RadioGroup
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_weight="0.8"
                 android:orientation="horizontal">
                 <RadioButton
@@ -43,12 +46,16 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="right"
                 android:layout_weight="0.2"
-                android:text=""/>
+                android:text="生日"/>
 
             <EditText
+                android:id="@+id/edt_birthday"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_weight="0.8"/>
         </LinearLayout>
 
@@ -62,11 +69,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"
-                android:text=""/>
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:text="年龄"/>
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_weight="0.8"/>
 
         </LinearLayout>
@@ -81,14 +91,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Yes"/>
+                android:text="开始分析"/>
 
             <Button
                 android:id="@+id/btn_no"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="No"/>
+                android:text="关闭"/>
 
         </LinearLayout>
 

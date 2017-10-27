@@ -3,6 +3,7 @@
     package="skinapp.luca.com">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -33,6 +34,7 @@
         <activity
             android:name=".ThirdMainActivity"
             android:screenOrientation="landscape" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>
