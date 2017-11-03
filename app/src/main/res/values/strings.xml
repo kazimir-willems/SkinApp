@@ -3,4 +3,15 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <array name="sample_user">
+        <item>金先生 男 35岁</item>
+        <item>黄女士 女 20岁</item>
+        <item>遭先生 男 24岁</item>
+    </array>
+
+    <array name="sample_review">
+        <item>2017年10月1日总汇</item>
+        <item>2017年11月1日总汇</item>
+    </array>
 </resources>

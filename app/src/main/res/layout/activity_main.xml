@@ -5,50 +5,250 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="skinapp.luca.com.MainActivity">
+    tools:context="skinapp.luca.com.ui.MainActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="油份分析"/>
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="肌肤铅汞值"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="胶原蛋白纤维"/>
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="肌肤弹性"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="毛孔状况"/>
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="痤疮状况"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="肌肤敏感度"/>
+
+                <Button
+                    android:layout_width="172dp"
+                    android:layout_height="172dp"
+                    android:layout_margin="32dp"
+                    style="@style/ButtonDefault"
+                    android:textSize="24sp"
+                    android:text="水分含量"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="32dp"
-        android:layout_weight="0.3">
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.3">
 
-        <Button
-            android:id="@+id/btn_vip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="VIP顾客"/>
-        <Button
-            android:id="@+id/btn_second"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="普通顾客"/>
-        <Button
-            android:id="@+id/btn_third"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="产品管理"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="仪器设置" />
+                <com.cuboid.cuboidcirclebutton.CuboidButton
+                    android:id="@+id/btn_login"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="24sp"
+                    android:text="登录"
+                    android:textColor="@color/colorWhite"
+                    app:cub_color="@color/colorPrimary"/>
 
-        <Button
-            android:id="@+id/btn_exit"
+                <TextView
+                    android:id="@+id/btn_user_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="选择用户"
+                    android:layout_toRightOf="@id/btn_login"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="仪器关机"/>
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_user_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="男       35岁"
+                    android:textColor="@color/colorBlack"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        android:text="查看历史"
+                        android:layout_marginRight="8dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/btn_chart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        android:layout_marginLeft="8dp"
+                        android:text="查看图表"/>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:src="@drawable/dotted"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layerType="software" />
+
+                <ListView
+                    android:id="@+id/review_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:entries="@array/sample_review">
+
+                </ListView>
+
+                <RelativeLayout
+                    android:id="@+id/chart_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+                    <lecho.lib.hellocharts.view.LineChartView
+                        android:id="@+id/chart"
+                        android:layout_width="320dp"
+                        android:layout_height="240dp"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/user_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:entries="@array/sample_user"
+                android:layout_gravity="center_horizontal"></ListView>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.7"></View>
 
 </LinearLayout>

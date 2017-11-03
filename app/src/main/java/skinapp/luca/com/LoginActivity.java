@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import skinapp.luca.com.ui.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
