@@ -2,7 +2,9 @@ package skinapp.luca.com.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView reviewList;
     private LineChartView chart;
+
+    private Button btnAnalyzeWater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +209,16 @@ public class MainActivity extends AppCompatActivity {
                 updateDisplay();
 
                 informDialog.show();
+            }
+        });
+
+        btnAnalyzeWater = (Button) findViewById(R.id.btn_analyze_water);
+        btnAnalyzeWater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+                startActivity(intent);
             }
         });
     }
