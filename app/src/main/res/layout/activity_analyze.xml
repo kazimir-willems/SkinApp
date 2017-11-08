@@ -14,14 +14,15 @@
         android:orientation="vertical">
         
         <ImageView
-            android:layout_width="320dp"
-            android:layout_height="320dp"
+            android:id="@+id/img_original"
+            android:layout_width="480dp"
+            android:layout_height="480dp"
             android:layout_gravity="center_horizontal"/>
 
         <com.cuboid.cuboidcirclebutton.CuboidButton
             android:id="@+id/btn_start"
-            android:layout_width="96dp"
-            android:layout_height="64dp"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
             android:layout_marginTop="32dp"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"
@@ -38,14 +39,15 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="320dp"
-            android:layout_height="320dp"
+            android:id="@+id/img_converted"
+            android:layout_width="480dp"
+            android:layout_height="480dp"
             android:layout_gravity="center_horizontal"/>
 
         <com.cuboid.cuboidcirclebutton.CuboidButton
             android:id="@+id/btn_analyze"
-            android:layout_width="96dp"
-            android:layout_height="64dp"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
             android:layout_marginTop="32dp"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"
