@@ -31,11 +31,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.view.LineChartView;
 import skinapp.luca.com.R;
+import skinapp.luca.com.consts.CommonConsts;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -211,16 +213,78 @@ public class MainActivity extends AppCompatActivity {
                 informDialog.show();
             }
         });
+    }
 
-        btnAnalyzeWater = (Button) findViewById(R.id.btn_analyze_water);
-        btnAnalyzeWater.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+    @OnClick(R.id.btn_analyze_oil)
+    void onClickBtnOil() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
-                startActivity(intent);
-            }
-        });
+        intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_fiber)
+    void onClickBtnFiber() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.FIBER_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_muscle)
+    void onClickBtnMuscle() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.MUSCLE_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_flex)
+    void onClickBtnFlex() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.FLEX_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_hairhole)
+    void onClickBtnHairhole() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.HAIRHOLE_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_zit)
+    void onClickBtnZit() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.ZIT_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_action)
+    void onClickBtnAction() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.ACTION_ANALYSIS);
+
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_analyze_water)
+    void onClickBtnWater() {
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.WATER_ANALYSIS);
+
+        startActivity(intent);
     }
 
     @Override

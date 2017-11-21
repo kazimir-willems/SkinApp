@@ -25,7 +25,7 @@
                 android:gravity="center_horizontal">
 
                 <Button
-                    android:id="@+id/btn_analyze_water"
+                    android:id="@+id/btn_analyze_oil"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
@@ -34,6 +34,7 @@
                     android:text="油份分析"/>
 
                 <Button
+                    android:id="@+id/btn_analyze_muscle"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
@@ -50,6 +51,7 @@
                 android:gravity="center_horizontal">
 
                 <Button
+                    android:id="@+id/btn_analyze_fiber"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
@@ -58,6 +60,7 @@
                     android:text="胶原蛋白纤维"/>
 
                 <Button
+                    android:id="@+id/btn_analyze_flex"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
@@ -74,19 +77,23 @@
                 android:gravity="center_horizontal">
 
                 <Button
+                    android:id="@+id/btn_analyze_hairhole"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
                     style="@style/ButtonDefault"
                     android:textSize="24sp"
+                    android:visibility="gone"
                     android:text="毛孔状况"/>
 
                 <Button
+                    android:id="@+id/btn_analyze_zit"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
                     style="@style/ButtonDefault"
                     android:textSize="24sp"
+                    android:visibility="gone"
                     android:text="痤疮状况"/>
 
             </LinearLayout>
@@ -98,14 +105,17 @@
                 android:gravity="center_horizontal">
 
                 <Button
+                    android:id="@+id/btn_analyze_action"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
                     style="@style/ButtonDefault"
                     android:textSize="24sp"
+                    android:visibility="gone"
                     android:text="肌肤敏感度"/>
 
                 <Button
+                    android:id="@+id/btn_analyze_water"
                     android:layout_width="172dp"
                     android:layout_height="172dp"
                     android:layout_margin="32dp"
@@ -229,6 +239,7 @@
                         android:id="@+id/chart"
                         android:layout_width="320dp"
                         android:layout_height="240dp"
+                        android:background="@color/colorWhite"
                         android:layout_centerInParent="true"/>
                 </RelativeLayout>
             </LinearLayout>

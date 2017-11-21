@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="skinapp.luca.com.ui.AnalyzeActivity">
+    tools:context="skinapp.luca.com.ui.AnalyzeActivity"
+    android:background="@mipmap/img_background">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -16,7 +17,10 @@
         <ImageView
             android:id="@+id/img_original"
             android:layout_width="480dp"
-            android:layout_height="480dp"
+            android:layout_height="420dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="32dp"
+            android:background="@color/colorWhite"
             android:layout_gravity="center_horizontal"/>
 
         <com.cuboid.cuboidcirclebutton.CuboidButton
@@ -41,7 +45,10 @@
         <ImageView
             android:id="@+id/img_converted"
             android:layout_width="480dp"
-            android:layout_height="480dp"
+            android:layout_height="420dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="32dp"
+            android:background="@color/colorWhite"
             android:layout_gravity="center_horizontal"/>
 
         <com.cuboid.cuboidcirclebutton.CuboidButton

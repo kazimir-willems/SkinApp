@@ -27,20 +27,11 @@
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".VIPMainActivity"
-            android:screenOrientation="landscape" />
+            android:name=".ui.CaptureActivity"
+            android:screenOrientation="landscape"/>
         <activity
-            android:name=".SecondMainActivity"
+            android:name=".ui.AnalyzeActivity"
             android:screenOrientation="landscape" />
-        <activity
-            android:name=".ThirdMainActivity"
-            android:screenOrientation="landscape" />
-        <activity android:name=".SettingsActivity" />
-        <activity
-            android:name=".LoginActivity"
-            android:screenOrientation="landscape" />
-        <activity android:name=".ui.CaptureActivity" />
-        <activity android:name=".ui.AnalyzeActivity"></activity>
     </application>
 
 </manifest>

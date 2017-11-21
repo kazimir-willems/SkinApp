@@ -14,16 +14,22 @@ public class CaptureActivity extends AppCompatActivity {
 
     private CuboidButton btnCapture;
 
+    private int type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
+
+        type = getIntent().getIntExtra("type", 0);
 
         btnCapture = (CuboidButton) findViewById(R.id.btn_capture);
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CaptureActivity.this, AnalyzeActivity.class);
+
+                intent.putExtra("type", type);
 
                 startActivity(intent);
             }
