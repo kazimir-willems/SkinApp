@@ -1,5 +1,6 @@
 package skinapp.luca.com.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 
 import com.cuboid.cuboidcirclebutton.CuboidButton;
 
+import java.util.Random;
+
 import skinapp.luca.com.R;
 import skinapp.luca.com.consts.CommonConsts;
 
@@ -37,6 +40,7 @@ public class AnalyzeActivity extends AppCompatActivity {
     private int nPixelCnt = 0;
 
     private int type = 0;
+    private int prodRec = 0;
 
     Handler handler = new Handler();
     Runnable runnable = new Runnable() {
@@ -59,8 +63,16 @@ public class AnalyzeActivity extends AppCompatActivity {
         btnStart = (CuboidButton) findViewById(R.id.btn_start);
         btnAnalyze = (CuboidButton) findViewById(R.id.btn_analyze);
 
+        btnAnalyze.setEnabled(false);
+
+        Random r = new Random();
+        int randomInt = r.nextInt(80 ) ;
+
+        int seed = randomInt % 8 + 1;
+        String imgName = "img_sample" + seed;
+        int resourceId = this.getResources().getIdentifier(imgName, "mipmap", this.getPackageName());
         bm = BitmapFactory.decodeResource(getResources(),
-                R.mipmap.img_temp);
+                resourceId);
 
         imgOriginal.setImageBitmap(bm);
 
@@ -71,6 +83,8 @@ public class AnalyzeActivity extends AppCompatActivity {
 
                 ProcessTask task = new ProcessTask();
                 task.execute(type);
+
+                btnAnalyze.setEnabled(false);
 
                 /*int redPercentage = 0;
                 int totalPixel = bm.getWidth() * bm.getHeight();
@@ -86,30 +100,152 @@ public class AnalyzeActivity extends AppCompatActivity {
                 LayoutInflater factory = LayoutInflater.from(AnalyzeActivity.this);
                 final View resultDialogView = factory.inflate(R.layout.dialog_result, null);
 
-                TextView tvXcyyResult = resultDialogView.findViewById(R.id.tv_xcyy_result);
-                TextView tvJyResult = resultDialogView.findViewById(R.id.tv_jy_result);
                 TextView tvPercentage = resultDialogView.findViewById(R.id.tv_percentage);
+                TextView tvTitle = resultDialogView.findViewById(R.id.tv_title);
+                TextView tvInformation = resultDialogView.findViewById(R.id.tv_information);
+                TextView tvResult = resultDialogView.findViewById(R.id.tv_result);
+
+                double percentage = nPixelCnt * 100.0 / (convertedBitmap.getWidth() * convertedBitmap.getHeight());
+                long anaResult = analyze(Math.round(percentage), type);
+                tvPercentage.setText(anaResult + "%");
 
                 switch (type) {
                     case CommonConsts.OIL_ANALYSIS:
-                        tvXcyyResult.setText(getResources().getStringArray(R.array.oil_analysis_result)[0]);
-                        tvJyResult.setText(getResources().getStringArray(R.array.oil_analysis_result)[1]);
+                        if(anaResult < 20) {
+                            tvTitle.setText(R.string.str_dry_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.dry_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.dry_skin)[1]);
+
+                            prodRec = 3;
+                        } else if(anaResult >= 20 && anaResult < 40) {
+                            tvTitle.setText(R.string.str_neutral_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.neutral_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.neutral_skin)[1]);
+
+                            prodRec = 3;
+                        } else if(anaResult >= 40 && anaResult < 60) {
+                            tvTitle.setText(R.string.str_mixed_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.mixed_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.mixed_skin)[1]);
+
+                            prodRec = 1;
+                        } else if(anaResult >= 60 && anaResult < 80) {
+                            tvTitle.setText(R.string.str_sensitive_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.sensitive_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.sensitive_skin)[1]);
+
+                            prodRec = 2;
+                        } else {
+                            tvTitle.setText(R.string.str_oil_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.oil_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.oil_skin)[1]);
+
+                            prodRec = 4;
+                        }
+
                         break;
                     case CommonConsts.MUSCLE_ANALYSIS:
-                        tvXcyyResult.setText(getResources().getStringArray(R.array.zit_analysis_result)[0]);
-                        tvJyResult.setText(getResources().getStringArray(R.array.zit_analysis_result)[1]);
+                        if(anaResult < 20) {
+                            tvTitle.setText(R.string.str_aging_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.aging_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.aging_skin)[1]);
+
+                            prodRec = 4;
+                        } else if(anaResult >= 20 && anaResult < 40) {
+                            tvTitle.setText(R.string.str_dry_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.dry_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.dry_skin)[1]);
+
+                            prodRec = 1;
+                        } else if(anaResult >= 40 && anaResult < 60) {
+                            tvTitle.setText(R.string.str_mixed_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.mixed_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.mixed_skin)[1]);
+
+                            prodRec = 1;
+                        } else if(anaResult >= 60 && anaResult < 80) {
+                            tvTitle.setText(R.string.str_sensitive_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.sensitive_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.sensitive_skin)[1]);
+
+                            prodRec = 3;
+                        } else {
+                            tvTitle.setText(R.string.str_neutral_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.neutral_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.neutral_skin)[1]);
+
+                            prodRec = 2;
+                        }
+
                         break;
                     case CommonConsts.FIBER_ANALYSIS:
-                        tvXcyyResult.setText(getResources().getStringArray(R.array.action_analysis_result)[0]);
-                        tvJyResult.setText(getResources().getStringArray(R.array.action_analysis_result)[1]);
+                        if(anaResult < 20) {
+                            tvTitle.setText(R.string.str_dry_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.dry_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.dry_skin)[1]);
+
+                            prodRec = 2;
+                        } else if(anaResult >= 20 && anaResult < 40) {
+                            tvTitle.setText(R.string.str_mixed_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.mixed_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.mixed_skin)[1]);
+
+                            prodRec = 1;
+                        } else if(anaResult >= 40 && anaResult < 60) {
+                            tvTitle.setText(R.string.str_oil_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.oil_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.oil_skin)[1]);
+
+                            prodRec = 4;
+                        } else if(anaResult >= 60 && anaResult < 80) {
+                            tvTitle.setText(R.string.str_sensitive_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.sensitive_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.sensitive_skin)[1]);
+
+                            prodRec = 3;
+                        } else {
+                            tvTitle.setText(R.string.str_neutral_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.neutral_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.neutral_skin)[1]);
+
+                            prodRec = 1;
+                        }
                         break;
                     case CommonConsts.FLEX_ANALYSIS:
-                        tvXcyyResult.setText(getResources().getStringArray(R.array.flex_analysis_result)[0]);
-                        tvJyResult.setText(getResources().getStringArray(R.array.flex_analysis_result)[1]);
+                        if(anaResult < 20) {
+                            tvTitle.setText(R.string.str_aging_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.aging_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.aging_skin)[1]);
+
+                            prodRec = 1;
+                        } else if(anaResult >= 20 && anaResult < 40) {
+                            tvTitle.setText(R.string.str_mixed_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.mixed_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.mixed_skin)[1]);
+
+                            prodRec = 4;
+                        } else if(anaResult >= 40 && anaResult < 60) {
+                            tvTitle.setText(R.string.str_neutral_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.neutral_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.neutral_skin)[1]);
+
+                            prodRec = 2;
+                        } else if(anaResult >= 60 && anaResult < 80) {
+                            tvTitle.setText(R.string.str_sensitive_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.sensitive_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.sensitive_skin)[1]);
+
+                            prodRec = 3;
+                        } else {
+                            tvTitle.setText(R.string.str_oil_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.oil_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.oil_skin)[1]);
+
+                            prodRec = 4;
+                        }
+
                         break;
                     case CommonConsts.HAIRHOLE_ANALYSIS:
-                        tvXcyyResult.setText(getResources().getStringArray(R.array.hairhole_analysis_result)[0]);
-                        tvJyResult.setText(getResources().getStringArray(R.array.hairhole_analysis_result)[1]);
                         break;
                     case CommonConsts.ZIT_ANALYSIS:
 
@@ -118,13 +254,40 @@ public class AnalyzeActivity extends AppCompatActivity {
 
                         break;
                     case CommonConsts.WATER_ANALYSIS:
-                        tvXcyyResult.setText(getResources().getStringArray(R.array.water_analysis_result)[0]);
-                        tvJyResult.setText(getResources().getStringArray(R.array.water_analysis_result)[1]);
+                        if(anaResult < 20) {
+                            tvTitle.setText(R.string.str_aging_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.aging_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.aging_skin)[1]);
+
+                            prodRec = 4;
+                        } else if(anaResult >= 20 && anaResult < 40) {
+                            tvTitle.setText(R.string.str_dry_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.dry_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.dry_skin)[1]);
+
+                            prodRec = 2;
+                        } else if(anaResult >= 40 && anaResult < 60) {
+                            tvTitle.setText(R.string.str_mixed_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.mixed_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.mixed_skin)[1]);
+
+                            prodRec = 2;
+                        } else if(anaResult >= 60 && anaResult < 80) {
+                            tvTitle.setText(R.string.str_neutral_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.neutral_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.neutral_skin)[1]);
+
+                            prodRec = 1;
+                        } else {
+                            tvTitle.setText(R.string.str_sensitive_skin);
+                            tvInformation.setText(getResources().getStringArray(R.array.sensitive_skin)[0]);
+                            tvResult.setText(getResources().getStringArray(R.array.sensitive_skin)[1]);
+
+                            prodRec = 3;
+                        }
+
                         break;
                 }
-
-                double percentage = nPixelCnt * 100.0 / (convertedBitmap.getWidth() * convertedBitmap.getHeight());
-                tvPercentage.setText(Math.round(percentage) + "%");
 
                 final AlertDialog resultDialog = new AlertDialog.Builder(AnalyzeActivity.this).create();
                 resultDialog.setView(resultDialogView);
@@ -135,10 +298,14 @@ public class AnalyzeActivity extends AppCompatActivity {
                         resultDialog.dismiss();
                     }
                 });
-                resultDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+                resultDialogView.findViewById(R.id.btn_product).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        resultDialog.dismiss();
+
+                        Intent intent = new Intent(AnalyzeActivity.this, RecommendationActivity.class);
+                        intent.putExtra("type", prodRec);
+
+                        startActivity(intent);
                     }
                 });
 
@@ -207,6 +374,7 @@ public class AnalyzeActivity extends AppCompatActivity {
             ret = Color.rgb(0, 128, 0);
             nPixelCnt++;
         } else {
+//            nPixelCnt++;
             ret = Color.rgb(ebx, ebx,ebx);
         }
 
@@ -229,6 +397,7 @@ public class AnalyzeActivity extends AppCompatActivity {
             ret = Color.rgb(0, 255, 255);
             nPixelCnt++;
         } else {
+//            nPixelCnt++;
             ret = Color.rgb(ebx, ebx,ebx);
         }
 
@@ -279,11 +448,11 @@ public class AnalyzeActivity extends AppCompatActivity {
         return ret;
     }
 
-    private int analyze(int redCount, int nMode) {
-        int temp = redCount;
-        int ret = -1;
+    private long analyze(long redCount, int nMode) {
+        long temp = redCount;
+        long ret = -1;
         switch(nMode) {
-            case 1:
+            case CommonConsts.OIL_ANALYSIS:
                 if(temp < 3) {
                     ret = 3;
                     break;
@@ -295,11 +464,51 @@ public class AnalyzeActivity extends AppCompatActivity {
                     ret = temp;
                 }
                 break;
-            case 2:
+            case CommonConsts.MUSCLE_ANALYSIS:
+                if(temp > 3) {
+                    ret = 8;
+                    break;
+                }
 
+                if(temp > 65) {
+                    ret = 65;
+                } else {
+                    ret = temp;
+                }
                 break;
-            case 3:
+            case CommonConsts.FIBER_ANALYSIS:
+                if(temp < 8) {
+                    ret = 8;
+                    break;
+                }
 
+                if(temp > 75) {
+                    ret = 75;
+                } else {
+                    ret = temp;
+                }
+                break;
+            case CommonConsts.FLEX_ANALYSIS:
+                if(temp < 15) {
+                    ret = 15;
+                    break;
+                }
+                if(temp > 71) {
+                    ret = 71;
+                } else {
+                    ret = temp;
+                }
+                break;
+            case CommonConsts.WATER_ANALYSIS:
+                if (temp < 0x19) {
+                    ret = 0x19;
+                    break;
+                }
+                if(temp > 86) {
+                    ret = 86;
+                } else {
+                    ret = temp;
+                }
                 break;
             default:
                 break;
@@ -373,6 +582,7 @@ public class AnalyzeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
+            btnAnalyze.setEnabled(true);
             return;
         }
     }

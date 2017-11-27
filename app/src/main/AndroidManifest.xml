@@ -28,10 +28,11 @@
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".ui.CaptureActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.AnalyzeActivity"
             android:screenOrientation="landscape" />
+        <activity android:name=".ui.RecommendationActivity"></activity>
     </application>
 
 </manifest>

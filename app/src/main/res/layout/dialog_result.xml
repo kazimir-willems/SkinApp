@@ -15,47 +15,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:text="中性皮肤"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="false"
-            android:text="形成原因"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="改善建议"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="8dp"/>
 
-        <TextView
-            android:id="@+id/tv_xcyy_result"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tv_jy_result"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -74,11 +53,11 @@
             style="@style/ButtonDefault"/>
 
         <Button
-            android:id="@+id/btn_no"
+            android:id="@+id/btn_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="取消"
+            android:text="护肤品"
             android:layout_marginLeft="16dp"
             style="@style/ButtonDefault"/>
 

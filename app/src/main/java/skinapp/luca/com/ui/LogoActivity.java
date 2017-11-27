@@ -23,7 +23,7 @@ import skinapp.luca.com.fragment.LogoFragment;
 
 public class LogoActivity extends AppCompatActivity {
 
-    private int NUM_PAGES = 4;
+    private int NUM_PAGES = 3;
     private int currentPage = 0;
 
     private  PodSlider podSlider;
@@ -67,11 +67,18 @@ public class LogoActivity extends AppCompatActivity {
 
         podSlider.setMediumCircleInterpolator(null);
 
+        final Timer swipeTimer = new Timer();
+
         final Handler handler = new Handler();
         final Runnable Update = new Runnable() {
             public void run() {
                 if (currentPage == NUM_PAGES - 1) {
-                    currentPage = 0;
+                    Intent intent = new Intent(LogoActivity.this, MainActivity.class);
+
+                    startActivity(intent);
+                    finish();
+
+                    swipeTimer.cancel();
                 } else {
                     currentPage++;
                 }
@@ -80,7 +87,7 @@ public class LogoActivity extends AppCompatActivity {
                 pager.setCurrentItem(currentPage);
             }
         };
-        Timer swipeTimer = new Timer();
+
         swipeTimer.schedule(new TimerTask() {
             @Override
             public void run() {
