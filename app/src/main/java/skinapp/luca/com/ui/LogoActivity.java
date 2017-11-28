@@ -36,10 +36,13 @@ public class LogoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logo);
 
+        final Timer swipeTimer = new Timer();
+
         btnNext = (Button) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                swipeTimer.cancel();
                 Intent intent = new Intent(LogoActivity.this, MainActivity.class);
 
                 startActivity(intent);
@@ -67,7 +70,7 @@ public class LogoActivity extends AppCompatActivity {
 
         podSlider.setMediumCircleInterpolator(null);
 
-        final Timer swipeTimer = new Timer();
+
 
         final Handler handler = new Handler();
         final Runnable Update = new Runnable() {

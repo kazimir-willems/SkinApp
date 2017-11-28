@@ -10,6 +10,7 @@
     <string name="str_mixed_skin">混合性皮肤</string>
     <string name="str_sensitive_skin">敏感性皮肤</string>
     <string name="str_aging_skin">老化肌肤</string>
+    <string name="str_processing">Processing...</string>
 
     <array name="sample_user">
         <item>金先生 男 35岁</item>

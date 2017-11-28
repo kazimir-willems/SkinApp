@@ -5,4 +5,13 @@ package skinapp.luca.com.event;
  */
 
 public class AnalyzeEvent {
+    int response = 0;
+
+    public AnalyzeEvent(int value) {
+        response = value;
+    }
+
+    public int getResponse() {
+        return response;
+    }
 }
