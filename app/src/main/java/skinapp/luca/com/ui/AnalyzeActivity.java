@@ -24,6 +24,7 @@ import com.cuboid.cuboidcirclebutton.CuboidButton;
 import java.util.Random;
 
 import skinapp.luca.com.R;
+import skinapp.luca.com.SkinApplication;
 import skinapp.luca.com.consts.CommonConsts;
 
 public class AnalyzeActivity extends AppCompatActivity {
@@ -71,8 +72,7 @@ public class AnalyzeActivity extends AppCompatActivity {
         int seed = randomInt % 8 + 1;
         String imgName = "img_sample" + seed;
         int resourceId = this.getResources().getIdentifier(imgName, "mipmap", this.getPackageName());
-        bm = BitmapFactory.decodeResource(getResources(),
-                resourceId);
+        bm = SkinApplication.capturedPhoto;
 
         imgOriginal.setImageBitmap(bm);
 

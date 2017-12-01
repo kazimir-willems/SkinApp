@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -138,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 LayoutInflater factory = LayoutInflater.from(MainActivity.this);
-                final View informDialogView = factory.inflate(R.layout.dialog_information, null);
+                final View informDialogView = factory.inflate(R.layout.dialog_login, null);
                 edtBirthday = (EditText) informDialogView.findViewById(R.id.edt_birthday);
-                edtName = (EditText) informDialogView.findViewById(R.id.edt_name);
+                edtName = (EditText) informDialogView.findViewById(R.id.edt_id);
                 edtAge = (EditText) informDialogView.findViewById(R.id.edt_age);
                 male = (RadioButton) informDialogView.findViewById(R.id.male);
                 female = (RadioButton) informDialogView.findViewById(R.id.female);
@@ -165,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                 final AlertDialog informDialog = new AlertDialog.Builder(MainActivity.this).create();
                 informDialog.setView(informDialogView);
-                informDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+                informDialogView.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //your business logic
@@ -184,9 +183,13 @@ public class MainActivity extends AppCompatActivity {
                         informDialog.dismiss();
                     }
                 });
-                informDialogView.findViewById(R.id.btn_no).setOnClickListener(new View.OnClickListener() {
+                informDialogView.findViewById(R.id.btn_register).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+
+                        startActivity(intent);
+
                         informDialog.dismiss();
                     }
                 });

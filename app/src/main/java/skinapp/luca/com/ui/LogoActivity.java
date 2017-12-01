@@ -64,6 +64,26 @@ public class LogoActivity extends AppCompatActivity {
         PodPagerAdapter adapter = new PodPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         podSlider.setUpWithViewPager(pager);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position > 0) {
+                    btnNext.setVisibility(View.GONE);
+                } else {
+                    btnNext.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         podSlider.setCurrentlySelectedPod(currentPage);
         podSlider.setCurrentlySelectedPodAndAnimate(currentPage);
@@ -72,7 +92,7 @@ public class LogoActivity extends AppCompatActivity {
 
 
 
-        final Handler handler = new Handler();
+        /*final Handler handler = new Handler();
         final Runnable Update = new Runnable() {
             public void run() {
                 if (currentPage == NUM_PAGES - 1) {
@@ -89,14 +109,14 @@ public class LogoActivity extends AppCompatActivity {
                 podSlider.setCurrentlySelectedPodAndAnimate(currentPage);
                 pager.setCurrentItem(currentPage);
             }
-        };
+        };*/
 
-        swipeTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 3000, 3000);
+//        swipeTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                handler.post(Update);
+//            }
+//        }, 3000, 3000);
     }
 
     private class PodPagerAdapter extends FragmentStatePagerAdapter {
@@ -107,6 +127,7 @@ public class LogoActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             LogoFragment fragment = new LogoFragment().newInstance(position);
+
             return fragment;
         }
 

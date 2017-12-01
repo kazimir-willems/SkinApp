@@ -1,1 +1,3 @@
-include ':app'
+include ':app', ':libuvccamera', ':usbCameraCommon'
+project(':libuvccamera').projectDir = new File('app/libuvccamera')
+project(':usbCameraCommon').projectDir = new File('app/usbCameraCommon')

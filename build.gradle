@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -16,8 +17,10 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        maven { url 'http://raw.github.com/saki4510t/libcommon/master/repository/' }
         mavenCentral()
         mavenLocal()
+        google()
     }
 }
 
