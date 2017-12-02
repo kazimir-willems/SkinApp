@@ -1,7 +1,9 @@
 package skinapp.luca.com.ui;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -10,9 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -22,8 +28,12 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cuboid.cuboidcirclebutton.CuboidButton;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +46,12 @@ import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.view.LineChartView;
 import skinapp.luca.com.R;
+import skinapp.luca.com.SkinApplication;
 import skinapp.luca.com.consts.CommonConsts;
+import skinapp.luca.com.event.SignInEvent;
+import skinapp.luca.com.task.SignInTask;
+import skinapp.luca.com.util.StringUtil;
+import skinapp.luca.com.vo.SignInResponseVo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,12 +61,11 @@ public class MainActivity extends AppCompatActivity {
     private int mMonth;
     private int mDay;
 
-    private EditText edtBirthday;
     private CuboidButton btnLogin;
     private TextView btnUserList;
     private TextView tvUserInfo;
-    private EditText edtName;
-    private EditText edtAge;
+    private EditText edtLoginID;
+    private EditText edtPassword;
 
     private RadioButton male;
     private RadioButton female;
@@ -69,7 +83,13 @@ public class MainActivity extends AppCompatActivity {
     private ListView reviewList;
     private LineChartView chart;
 
-    private Button btnAnalyzeWater;
+    private Animation shake;
+    private ProgressDialog progressDialog;
+
+    private String loginID;
+    private String password;
+
+    private static final int REQUEST_SIGNUP = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
         chart.setLineChartData(data);
 
+        shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.edittext_shake);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.str_processing));
+
         btnReview = (TextView) findViewById(R.id.btn_review);
         btnChart = (TextView) findViewById(R.id.btn_chart);
 
@@ -138,29 +162,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 LayoutInflater factory = LayoutInflater.from(MainActivity.this);
                 final View informDialogView = factory.inflate(R.layout.dialog_login, null);
-                edtBirthday = (EditText) informDialogView.findViewById(R.id.edt_birthday);
-                edtName = (EditText) informDialogView.findViewById(R.id.edt_id);
-                edtAge = (EditText) informDialogView.findViewById(R.id.edt_age);
-                male = (RadioButton) informDialogView.findViewById(R.id.male);
-                female = (RadioButton) informDialogView.findViewById(R.id.female);
 
-                male.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(b) {
-                            selectedGender = 0;
-                        }
-                    }
-                });
-
-                female.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(b) {
-                            selectedGender = 1;
-                        }
-                    }
-                });
+                edtLoginID = (EditText) informDialogView.findViewById(R.id.edt_id);
+                edtPassword = (EditText) informDialogView.findViewById(R.id.edt_password);
 
                 final AlertDialog informDialog = new AlertDialog.Builder(MainActivity.this).create();
                 informDialog.setView(informDialogView);
@@ -168,19 +172,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //your business logic
-                        btnLogin.setText(edtName.getText());
-                        String userInfo = "";
+                        loginID = edtLoginID.getText().toString();
+                        password = edtPassword.getText().toString();
 
-                        if(selectedGender == 0)
-                            userInfo = "男      ";
-                        else
-                            userInfo = "女      ";
+                        if(!checkLoginID()) return;
+                        if(!checkPassword()) return;
 
-                        userInfo = userInfo + String.valueOf(edtAge.getText()) + "岁";
-                        tvUserInfo.setText(userInfo);
-                        infoLayout.setVisibility(View.VISIBLE);
-                        chartLayout.setVisibility(View.GONE);
-                        informDialog.dismiss();
+                        progressDialog.show();
+
+                        SignInTask task = new SignInTask();
+                        task.execute(loginID, password);
                     }
                 });
                 informDialogView.findViewById(R.id.btn_register).setOnClickListener(new View.OnClickListener() {
@@ -188,34 +189,46 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
 
-                        startActivity(intent);
+                        startActivityForResult(intent, REQUEST_SIGNUP);
 
                         informDialog.dismiss();
                     }
                 });
 
-                edtBirthday.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                            showDialog(DATE_DIALOG_ID);
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                // display the current date
-                updateDisplay();
-
                 informDialog.show();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onSignInEvet(SignInEvent event) {
+        hideProgressDialog();
+        SignInResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if(responseVo.success == 1) {
+                btnLogin.setText(loginID);
+                SkinApplication.bLogin = true;
+                SkinApplication.loginID = loginID;
+            } else {
+                loginFailed(responseVo.error_code);
+            }
+        } else {
+            networkError();
+        }
     }
 
     @OnClick(R.id.btn_analyze_oil)
@@ -290,34 +303,64 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DATE_DIALOG_ID:
-                return new DatePickerDialog(this,
-                        mDateSetListener,
-                        mYear, mMonth, mDay);
+    private boolean checkLoginID() {
+        if (StringUtil.isEmpty(loginID)) {
+            showInfoNotice(edtLoginID);
+            return false;
         }
-        return null;
+
+        return true;
     }
 
-    private DatePickerDialog.OnDateSetListener mDateSetListener =
-            new DatePickerDialog.OnDateSetListener() {
-                public void onDateSet(DatePicker view, int year,
-                                      int monthOfYear, int dayOfMonth) {
-                    mYear = year;
-                    mMonth = monthOfYear;
-                    mDay = dayOfMonth;
-                    updateDisplay();
-                }
-            };
+    private boolean checkPassword() {
+        if (StringUtil.isEmpty(password)) {
+            showInfoNotice(edtPassword);
+            return false;
+        }
 
-    private void updateDisplay() {
-        this.edtBirthday.setText(
-                new StringBuilder()
-                        // Month is 0 based so add 1
-                        .append(mYear).append("/")
-                        .append(mMonth + 1).append("/")
-                        .append(mDay));
+        return true;
+    }
+
+    private void showInfoNotice(EditText target) {
+        target.startAnimation(shake);
+        if (target.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    private void hideProgressDialog() {
+        if(progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void networkError() {
+        Toast.makeText(MainActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void loginFailed(int errorCode) {
+        switch(errorCode) {
+            case 2:
+                Toast.makeText(MainActivity.this, R.string.user_not_exist, Toast.LENGTH_LONG).show();
+                break;
+            case 3:
+                Toast.makeText(MainActivity.this, R.string.incorrect_password, Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_SIGNUP) {
+            if(resultCode == Activity.RESULT_OK){
+                String loginID = data.getStringExtra("loginID");
+
+                btnLogin.setText(loginID);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 }

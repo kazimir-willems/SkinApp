@@ -78,7 +78,9 @@ public final class CaptureActivity extends BaseActivity implements CameraDialog.
                     if (deviceList != null) {
                         for (final UsbDevice device: deviceList.values() ) {
                             if(device.getVendorId() == 1507 && device.getProductId() == 1296) {
-                                mUSBMonitor.requestPermission(device);
+                                if(mUSBMonitor != null) {
+                                    mUSBMonitor.requestPermission(device);
+                                }
                             }
                         }
                     }
@@ -91,7 +93,7 @@ public final class CaptureActivity extends BaseActivity implements CameraDialog.
             }
         };
 
-        handler.postDelayed(runnable, 3000);
+        handler.postDelayed(runnable, 1500);
     }
 
     @Override
@@ -145,6 +147,15 @@ public final class CaptureActivity extends BaseActivity implements CameraDialog.
             Bitmap currentPhoto = mUVCCameraView.getBitmap();
 
             SkinApplication.capturedPhoto = currentPhoto;
+
+            synchronized (mSync) {
+                if (mUVCCamera != null) {
+                    mUVCCamera.stopPreview();
+                }
+                if (mUSBMonitor != null) {
+                    mUSBMonitor.unregister();
+                }
+            }
 
             synchronized (mSync) {
                 releaseCamera();

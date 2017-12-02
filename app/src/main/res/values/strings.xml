@@ -11,6 +11,12 @@
     <string name="str_sensitive_skin">敏感性皮肤</string>
     <string name="str_aging_skin">老化肌肤</string>
     <string name="str_processing">Processing...</string>
+    <string name="network_error">Network Error</string>
+    <string name="user_already_exists">User already exists.</string>
+    <string name="user_not_exist">User not exists.</string>
+    <string name="incorrect_password">Incorrect Password</string>
+    <string name="incorrect_conf_password">Input Conf Password same as Password</string>
+    <string name="database_error">Database Error</string>
 
     <array name="sample_user">
         <item>金先生 男 35岁</item>

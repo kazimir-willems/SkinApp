@@ -43,18 +43,12 @@ public class AnalyzeActivity extends AppCompatActivity {
     private int type = 0;
     private int prodRec = 0;
 
-    Handler handler = new Handler();
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze);
+
+        System.gc();
 
         type = getIntent().getIntExtra("type", 0);
 
@@ -66,12 +60,6 @@ public class AnalyzeActivity extends AppCompatActivity {
 
         btnAnalyze.setEnabled(false);
 
-        Random r = new Random();
-        int randomInt = r.nextInt(80 ) ;
-
-        int seed = randomInt % 8 + 1;
-        String imgName = "img_sample" + seed;
-        int resourceId = this.getResources().getIdentifier(imgName, "mipmap", this.getPackageName());
         bm = SkinApplication.capturedPhoto;
 
         imgOriginal.setImageBitmap(bm);
@@ -80,6 +68,8 @@ public class AnalyzeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 nPixelCnt = 0;
+
+                System.gc();
 
                 ProcessTask task = new ProcessTask();
                 task.execute(type);

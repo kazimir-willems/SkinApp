@@ -58,6 +58,7 @@
             android:id="@+id/edt_password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:layout_marginLeft="16dp"
             android:layout_weight="0.8"/>
 
@@ -74,12 +75,13 @@
             android:layout_weight="0.2"
             android:layout_gravity="center"
             android:gravity="right"
-            android:text="Password:"/>
+            android:text="Confirm Password:"/>
 
         <EditText
             android:id="@+id/edt_conf_password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:layout_marginLeft="16dp"
             android:layout_weight="0.8"/>
 
@@ -93,7 +95,7 @@
         android:layout_marginTop="16dp">
 
         <Button
-            android:id="@+id/btn_register"
+            android:id="@+id/btn_signup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

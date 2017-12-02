@@ -26,7 +26,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustNothing|stateHidden" />
         <activity
             android:name=".ui.CaptureActivity"
             android:screenOrientation="landscape"

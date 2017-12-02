@@ -13,6 +13,8 @@ public class SkinApplication extends Application {
     private static SkinApplication instance;
 
     public static Bitmap capturedPhoto = null;
+    public static boolean bLogin = false;
+    public static String loginID = "";
 
     @Override
     protected void attachBaseContext(Context context) {
