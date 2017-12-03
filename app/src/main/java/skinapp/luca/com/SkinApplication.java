@@ -3,8 +3,6 @@ package skinapp.luca.com;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.multidex.MultiDex;
-
 /**
  * Created by Leif on 12/1/2017.
  */
@@ -16,11 +14,11 @@ public class SkinApplication extends Application {
     public static boolean bLogin = false;
     public static String loginID = "";
 
-    @Override
+    /*@Override
     protected void attachBaseContext(Context context) {
         super.attachBaseContext(context);
-        MultiDex.install(this);
-    }
+//        MultiDex.install(this);
+    }*/
 
     @Override
     public void onCreate() {

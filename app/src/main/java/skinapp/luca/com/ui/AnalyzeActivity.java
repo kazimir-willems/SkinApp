@@ -48,8 +48,6 @@ public class AnalyzeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analyze);
 
-        System.gc();
-
         type = getIntent().getIntExtra("type", 0);
 
         imgOriginal = (ImageView) findViewById(R.id.img_original);
@@ -68,8 +66,6 @@ public class AnalyzeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 nPixelCnt = 0;
-
-                System.gc();
 
                 ProcessTask task = new ProcessTask();
                 task.execute(type);
@@ -302,6 +298,13 @@ public class AnalyzeActivity extends AppCompatActivity {
                 resultDialog.show();
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        bm.recycle();
     }
 
     private Bitmap createInvertedBitmap(Bitmap src) {
@@ -573,6 +576,7 @@ public class AnalyzeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             btnAnalyze.setEnabled(true);
+
             return;
         }
     }
