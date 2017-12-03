@@ -233,9 +233,15 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_oil)
     void onClickBtnOil() {
-        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+        /*Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
+
+        startActivity(intent);*/
+
+        Intent intent = new Intent(MainActivity.this, RecommendationActivity.class);
+
+        intent.putExtra("type", "1");
 
         startActivity(intent);
     }

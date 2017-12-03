@@ -1,57 +1,125 @@
 package skinapp.luca.com.ui;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Random;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import skinapp.luca.com.R;
+import skinapp.luca.com.adapter.ProductAdapter;
+import skinapp.luca.com.event.ProductEvent;
+import skinapp.luca.com.model.ProductItem;
+import skinapp.luca.com.vo.ProductsResponseVo;
 
 public class RecommendationActivity extends AppCompatActivity {
+
+    @BindView(R.id.product_list)
+    RecyclerView productList;
+
+    private ProductAdapter adapter;
+
+    private LinearLayoutManager mLinearLayoutManager;
+
+    private int type = 0;
+
+    private ProgressDialog progressDialog;
+
+    private ArrayList<ProductItem> productItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommendation);
 
-        TextView tvTitle = (TextView) findViewById(R.id.tv_title);
-        TextView tvContent = (TextView) findViewById(R.id.tv_content);
-        ImageView ivProduct = (ImageView) findViewById(R.id.iv_prod);
+        ButterKnife.bind(this);
 
-//        Random r = new Random();
-//        int randomInt = r.nextInt(80 ) ;
+        productList.setHasFixedSize(true);
+        mLinearLayoutManager = new LinearLayoutManager(RecommendationActivity.this);
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        productList.setLayoutManager(mLinearLayoutManager);
+        productList.addItemDecoration(new DividerItemDecoration(RecommendationActivity.this, DividerItemDecoration.VERTICAL_LIST));
 
-//        int type = randomInt % 4 + 1;
+        adapter = new ProductAdapter(RecommendationActivity.this);
+        productList.setAdapter(adapter);
 
-        int type = getIntent().getIntExtra("type", 0);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.str_processing));
 
-        switch(type) {
-            case 1:
-                tvTitle.setText(getResources().getString(R.string.prod1_title));
-                tvContent.setText(getResources().getString(R.string.prod1_content));
+        refreshItems();
+    }
 
-                ivProduct.setBackground(getResources().getDrawable(R.mipmap.img_prod1));
-                break;
-            case 2:
-                tvTitle.setText(getResources().getString(R.string.prod2_title));
-                tvContent.setText(getResources().getString(R.string.prod2_content));
+    @Override
+    public void onResume() {
+        super.onResume();
 
-                ivProduct.setBackground(getResources().getDrawable(R.mipmap.img_prod2));
-                break;
-            case 3:
-                tvTitle.setText(getResources().getString(R.string.prod3_title));
-                tvContent.setText(getResources().getString(R.string.prod3_content));
+        EventBus.getDefault().register(this);
+    }
 
-                ivProduct.setBackground(getResources().getDrawable(R.mipmap.img_prod3));
-                break;
-            case 4:
-                tvTitle.setText(getResources().getString(R.string.prod4_title));
-                tvContent.setText(getResources().getString(R.string.prod4_content));
+    @Override
+    public void onPause() {
+        super.onPause();
 
-                ivProduct.setBackground(getResources().getDrawable(R.mipmap.img_prod4));
-                break;
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onClickHistoryEvent(ProductEvent event) {
+        hideProgressDialog();
+        ProductsResponseVo responseVo = event.getResponse();
+
+        if (responseVo != null) {
+            try {
+                JSONArray productsArray = new JSONArray(responseVo.products);
+
+                for(int i = 0; i < productsArray.length(); i++) {
+                    JSONObject jsonProductItem = productsArray.getJSONObject(i);
+
+                    ProductItem item = new ProductItem("", "", "", "");
+
+                    item.setName(jsonProductItem.getString("name"));
+                    item.setAdvantage(jsonProductItem.getString("advantage"));
+                    item.setComment(jsonProductItem.getString("comment"));
+                    item.setPhotoURL(jsonProductItem.getString("photo_url"));
+
+                    productItems.add(item);
+                }
+
+                adapter.addItems(productItems);
+                adapter.notifyDataSetChanged();
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            networkError();
         }
+    }
+
+    private void refreshItems() {
+
+    }
+
+    private void hideProgressDialog() {
+        if(progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void networkError() {
+        Toast.makeText(RecommendationActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
     }
 }
