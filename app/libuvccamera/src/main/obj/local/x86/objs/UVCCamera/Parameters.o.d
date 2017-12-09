@@ -5,10 +5,10 @@
   jni/libuvc/android/jni/../../include\libuvc/libuvc_config.h \
   jni/UVCCamera/..\utilbase.h jni/UVCCamera/../localdefines.h \
   jni/UVCCamera/../rapidjson/include\rapidjson/rapidjson.h \
-  C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstdlib \
-  C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstring \
-  C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstddef \
-  C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cassert \
+  C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstdlib \
+  C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstring \
+  C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstddef \
+  C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cassert \
   jni/UVCCamera/../rapidjson/include\rapidjson/allocators.h \
   jni/UVCCamera/../rapidjson/include\rapidjson/encodings.h \
   jni/UVCCamera/../rapidjson/include\rapidjson/stringbuffer.h \
@@ -17,7 +17,7 @@
   jni/UVCCamera/../rapidjson/include\rapidjson/internal/strfunc.h \
   jni/UVCCamera/../rapidjson/include\rapidjson/internal/dtoa.h \
   jni/UVCCamera/../rapidjson/include\rapidjson/internal/itoa.h \
-  C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\new \
+  C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\new \
   jni/libuvc/android/jni/../../include\libuvc/libuvc_internal.h \
   jni/libuvc/android/jni/../../include\utlist.h
 
@@ -37,13 +37,13 @@ jni/UVCCamera/../localdefines.h:
 
 jni/UVCCamera/../rapidjson/include\rapidjson/rapidjson.h:
 
-C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstdlib:
+C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstdlib:
 
-C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstring:
+C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstring:
 
-C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstddef:
+C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cstddef:
 
-C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cassert:
+C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\cassert:
 
 jni/UVCCamera/../rapidjson/include\rapidjson/allocators.h:
 
@@ -61,7 +61,7 @@ jni/UVCCamera/../rapidjson/include\rapidjson/internal/dtoa.h:
 
 jni/UVCCamera/../rapidjson/include\rapidjson/internal/itoa.h:
 
-C:/Users/Finn/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\new:
+C:/Users/Leif/AppData/Local/Android/Sdk/android-ndk-r14b/build//../sources/cxx-stl/system/include\new:
 
 jni/libuvc/android/jni/../../include\libuvc/libuvc_internal.h:
 

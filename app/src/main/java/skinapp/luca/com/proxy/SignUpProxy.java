@@ -1,5 +1,7 @@
 package skinapp.luca.com.proxy;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -21,6 +23,8 @@ public class SignUpProxy extends BaseProxy {
         RequestBody formBody = formBuilder.build();
 
         String contentString = postPlain(URLManager.getSignUpURL(), formBody);
+
+        Log.v("contentString", contentString);
 
         SignUpResponseVo responseVo = new Gson().fromJson(contentString, SignUpResponseVo.class);
 

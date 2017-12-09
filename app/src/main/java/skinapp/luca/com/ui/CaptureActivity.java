@@ -63,6 +63,8 @@ public final class CaptureActivity extends BaseActivity implements CameraDialog.
 
         type = getIntent().getIntExtra("type", 0);
 
+        System.gc();
+
         startCamera();
     }
 
@@ -277,15 +279,17 @@ public final class CaptureActivity extends BaseActivity implements CameraDialog.
                             return;
                         }
                     }
-                    final SurfaceTexture st = mUVCCameraView.getSurfaceTexture();
-                    if (st != null) {
-                        mPreviewSurface = new Surface(st);
-                        camera.setPreviewDisplay(mPreviewSurface);
+                    if(mUVCCameraView != null) {
+                        final SurfaceTexture st = mUVCCameraView.getSurfaceTexture();
+                        if (st != null) {
+                            mPreviewSurface = new Surface(st);
+                            camera.setPreviewDisplay(mPreviewSurface);
 //						camera.setFrameCallback(mIFrameCallback, UVCCamera.PIXEL_FORMAT_RGB565/*UVCCamera.PIXEL_FORMAT_NV21*/);
-                        camera.startPreview();
-                    }
-                    synchronized (mSync) {
-                        mUVCCamera = camera;
+                            camera.startPreview();
+                        }
+                        synchronized (mSync) {
+                            mUVCCamera = camera;
+                        }
                     }
                 }
             }, 0);

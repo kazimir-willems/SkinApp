@@ -10,6 +10,8 @@ import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -34,11 +37,15 @@ import com.cuboid.cuboidcirclebutton.CuboidButton;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import lecho.lib.hellocharts.model.Line;
@@ -47,10 +54,19 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.view.LineChartView;
 import skinapp.luca.com.R;
 import skinapp.luca.com.SkinApplication;
+import skinapp.luca.com.adapter.HistoryAdapter;
+import skinapp.luca.com.adapter.ProductAdapter;
 import skinapp.luca.com.consts.CommonConsts;
+import skinapp.luca.com.event.GetHistoryEvent;
+import skinapp.luca.com.event.ProductEvent;
 import skinapp.luca.com.event.SignInEvent;
+import skinapp.luca.com.model.HistoryItem;
+import skinapp.luca.com.model.ProductItem;
+import skinapp.luca.com.task.GetHistoryTask;
 import skinapp.luca.com.task.SignInTask;
 import skinapp.luca.com.util.StringUtil;
+import skinapp.luca.com.vo.HistoryResponseVo;
+import skinapp.luca.com.vo.ProductsResponseVo;
 import skinapp.luca.com.vo.SignInResponseVo;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout userListLayout;
     private RelativeLayout chartLayout;
 
-    private ListView reviewList;
+    private RecyclerView reviewList;
     private LineChartView chart;
 
     private Animation shake;
@@ -90,6 +106,16 @@ public class MainActivity extends AppCompatActivity {
     private String password;
 
     private static final int REQUEST_SIGNUP = 1;
+
+    private AlertDialog informDialog;
+
+    private ArrayList<HistoryItem> historyItems = new ArrayList<>();
+
+    @BindView(R.id.iv_qrcode)
+    ImageView ivQrCode;
+
+    private HistoryAdapter adapter;
+    private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         chartLayout = (RelativeLayout) findViewById(R.id.chart_layout);
 
         chart = (LineChartView) findViewById(R.id.chart);
-        reviewList = (ListView) findViewById(R.id.review_list);
+        reviewList = (RecyclerView) findViewById(R.id.review_list);
 
         List<PointValue> values = new ArrayList<PointValue>();
         values.add(new PointValue(0, 2));
@@ -166,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 edtLoginID = (EditText) informDialogView.findViewById(R.id.edt_id);
                 edtPassword = (EditText) informDialogView.findViewById(R.id.edt_password);
 
-                final AlertDialog informDialog = new AlertDialog.Builder(MainActivity.this).create();
+                informDialog = new AlertDialog.Builder(MainActivity.this).create();
                 informDialog.setView(informDialogView);
                 informDialogView.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -198,6 +224,15 @@ public class MainActivity extends AppCompatActivity {
                 informDialog.show();
             }
         });
+
+        reviewList.setHasFixedSize(true);
+        mLinearLayoutManager = new LinearLayoutManager(MainActivity.this);
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        reviewList.setLayoutManager(mLinearLayoutManager);
+        reviewList.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL_LIST));
+
+        adapter = new HistoryAdapter(MainActivity.this);
+        reviewList.setAdapter(adapter);
     }
 
     @Override
@@ -205,6 +240,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         EventBus.getDefault().register(this);
+
+        if(SkinApplication.bLogin)
+            refreshHistory();
     }
 
     @Override
@@ -223,6 +261,13 @@ public class MainActivity extends AppCompatActivity {
                 btnLogin.setText(loginID);
                 SkinApplication.bLogin = true;
                 SkinApplication.loginID = loginID;
+
+                informDialog.dismiss();
+
+                ivQrCode.setVisibility(View.GONE);
+                infoLayout.setVisibility(View.VISIBLE);
+
+                refreshHistory();
             } else {
                 loginFailed(responseVo.error_code);
             }
@@ -231,19 +276,72 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Subscribe
+    public void onGetHistoryEvent(GetHistoryEvent event) {
+        hideProgressDialog();
+        HistoryResponseVo responseVo = event.getResponse();
+
+        if (responseVo != null) {
+            try {
+                JSONArray historyArray = new JSONArray(responseVo.history);
+
+                historyItems.clear();
+
+                for(int i = 0; i < historyArray.length(); i++) {
+                    JSONObject jsonHistoryItem = historyArray.getJSONObject(i);
+
+                    HistoryItem item = new HistoryItem();
+
+                    int tempType = jsonHistoryItem.getInt("type");
+                    String strType = "";
+                    switch (tempType) {
+                        case CommonConsts.OIL_ANALYSIS:
+                            strType = "油份分析";
+                            break;
+                        case CommonConsts.MUSCLE_ANALYSIS:
+                            strType = "肌肤铅汞值";
+                            break;
+                        case CommonConsts.FIBER_ANALYSIS:
+                            strType = "胶原蛋白纤维";
+                            break;
+                        case CommonConsts.FLEX_ANALYSIS:
+                            strType = "肌肤弹性";
+                            break;
+                        case CommonConsts.WATER_ANALYSIS:
+                            strType = "水分含量";
+                            break;
+                    }
+
+                    item.setType(strType);
+                    item.setValue(jsonHistoryItem.getString("value"));
+                    item.setDate(jsonHistoryItem.getString("date").split(" ")[0]);
+
+                    historyItems.add(item);
+                }
+
+                adapter.addItems(historyItems);
+                adapter.notifyDataSetChanged();
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            networkError();
+        }
+    }
+
     @OnClick(R.id.btn_analyze_oil)
     void onClickBtnOil() {
-        /*Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+        Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+
+        intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
+
+        startActivity(intent);
+
+        /*Intent intent = new Intent(MainActivity.this, AnalyzeActivity.class);
 
         intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
 
         startActivity(intent);*/
-
-        Intent intent = new Intent(MainActivity.this, RecommendationActivity.class);
-
-        intent.putExtra("type", "1");
-
-        startActivity(intent);
     }
 
     @OnClick(R.id.btn_analyze_fiber)
@@ -355,6 +453,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void refreshHistory() {
+        progressDialog.show();
+
+        GetHistoryTask task = new GetHistoryTask();
+        task.execute(SkinApplication.loginID);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -363,6 +468,10 @@ public class MainActivity extends AppCompatActivity {
                 String loginID = data.getStringExtra("loginID");
 
                 btnLogin.setText(loginID);
+                ivQrCode.setVisibility(View.GONE);
+                infoLayout.setVisibility(View.VISIBLE);
+
+                refreshHistory();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

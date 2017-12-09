@@ -1,5 +1,6 @@
 package skinapp.luca.com.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,18 +15,30 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cuboid.cuboidcirclebutton.CuboidButton;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Random;
 
 import skinapp.luca.com.R;
 import skinapp.luca.com.SkinApplication;
 import skinapp.luca.com.consts.CommonConsts;
+import skinapp.luca.com.event.GetAnalysisEvent;
+import skinapp.luca.com.event.SignInEvent;
+import skinapp.luca.com.task.GetAnalysisTask;
+import skinapp.luca.com.vo.GetAnalysisResponseVo;
+import skinapp.luca.com.vo.SignInResponseVo;
 
 public class AnalyzeActivity extends AppCompatActivity {
 
@@ -43,6 +56,10 @@ public class AnalyzeActivity extends AppCompatActivity {
     private int type = 0;
     private int prodRec = 0;
 
+    private long anaResult;
+
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +75,12 @@ public class AnalyzeActivity extends AppCompatActivity {
 
         btnAnalyze.setEnabled(false);
 
-        bm = SkinApplication.capturedPhoto;
+//        bm = SkinApplication.capturedPhoto.copy(Bitmap.Config.ARGB_8888, true);
 
-        imgOriginal.setImageBitmap(bm);
+        imgOriginal.setImageBitmap(SkinApplication.capturedPhoto);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.str_processing));
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +103,8 @@ public class AnalyzeActivity extends AppCompatActivity {
         btnAnalyze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutInflater factory = LayoutInflater.from(AnalyzeActivity.this);
+                getAnalysisData();
+                /*LayoutInflater factory = LayoutInflater.from(AnalyzeActivity.this);
                 final View resultDialogView = factory.inflate(R.layout.dialog_result, null);
 
                 TextView tvPercentage = resultDialogView.findViewById(R.id.tv_percentage);
@@ -92,7 +113,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                 TextView tvResult = resultDialogView.findViewById(R.id.tv_result);
 
                 double percentage = nPixelCnt * 100.0 / (convertedBitmap.getWidth() * convertedBitmap.getHeight());
-                long anaResult = analyze(Math.round(percentage), type);
+                anaResult = analyze(Math.round(percentage), type);
                 tvPercentage.setText(anaResult + "%");
 
                 switch (type) {
@@ -295,16 +316,104 @@ public class AnalyzeActivity extends AppCompatActivity {
                     }
                 });
 
-                resultDialog.show();
+                resultDialog.show();*/
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        EventBus.getDefault().unregister(this);
+        System.gc();
+
+        if(convertedBitmap != null) {
+            convertedBitmap.recycle();
+        }
+
+        if(SkinApplication.capturedPhoto != null) {
+            SkinApplication.capturedPhoto.recycle();
+        }
+    }
+
+    @Subscribe
+    public void onGetAnalysisEvet(GetAnalysisEvent event) {
+        hideProgressDialog();
+        GetAnalysisResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if(responseVo.success == 1) {
+                try {
+                    JSONObject jsonResult = new JSONObject(responseVo.result);
+
+                    final String id = jsonResult.getString("id");
+                    String name = jsonResult.getString("name");
+                    String comment = jsonResult.getString("comment");
+
+                    LayoutInflater factory = LayoutInflater.from(AnalyzeActivity.this);
+                    final View resultDialogView = factory.inflate(R.layout.dialog_result, null);
+
+                    TextView tvPercentage = resultDialogView.findViewById(R.id.tv_percentage);
+                    TextView tvTitle = resultDialogView.findViewById(R.id.tv_title);
+                    TextView tvInformation = resultDialogView.findViewById(R.id.tv_information);
+
+                    /*double percentage = nPixelCnt * 100.0 / (convertedBitmap.getWidth() * convertedBitmap.getHeight());
+                    anaResult = analyze(Math.round(percentage), type);*/
+                    tvPercentage.setText(anaResult + "%");
+
+                    tvTitle.setText(name);
+                    tvInformation.setText(comment);
+                    final AlertDialog resultDialog = new AlertDialog.Builder(AnalyzeActivity.this).create();
+                    resultDialog.setView(resultDialogView);
+                    resultDialogView.findViewById(R.id.btn_yes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //your business logic
+                            resultDialog.dismiss();
+                        }
+                    });
+                    resultDialogView.findViewById(R.id.btn_product).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent intent = new Intent(AnalyzeActivity.this, RecommendationActivity.class);
+                            intent.putExtra("type", id);
+
+                            startActivity(intent);
+                        }
+                    });
+
+                    resultDialog.show();
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                networkError();
+            }
+        } else {
+            networkError();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        bm.recycle();
+        if(convertedBitmap != null) {
+            convertedBitmap.recycle();
+        }
+
+        if(SkinApplication.capturedPhoto != null) {
+            SkinApplication.capturedPhoto.recycle();
+        }
+//        bm.recycle();
     }
 
     private Bitmap createInvertedBitmap(Bitmap src) {
@@ -510,6 +619,26 @@ public class AnalyzeActivity extends AppCompatActivity {
         return ret;
     }
 
+    private void getAnalysisData() {
+        double percentage = nPixelCnt * 100.0 / (convertedBitmap.getWidth() * convertedBitmap.getHeight());
+        anaResult = analyze(Math.round(percentage), type);
+
+        progressDialog.show();
+
+        GetAnalysisTask task = new GetAnalysisTask();
+        task.execute(String.valueOf(type), String.valueOf(anaResult), SkinApplication.loginID);
+    }
+
+    private void hideProgressDialog() {
+        if(progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void networkError() {
+        Toast.makeText(AnalyzeActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
+    }
+
     public class ProcessTask extends AsyncTask<Integer, Void, Boolean> {
 
         private int nMode = 0;
@@ -517,11 +646,12 @@ public class AnalyzeActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Integer... mode) {
             nMode = mode[0];
-            convertedBitmap = bm.copy(Bitmap.Config.ARGB_8888, true);
+            convertedBitmap = SkinApplication.capturedPhoto.copy(Bitmap.Config.RGB_565, true);
             nPixelCnt = 0;
-            for(int x = 0; x < bm.getWidth(); x++) {
-                for (int y = 0; y < bm.getHeight(); y++) {
-                    int pixel = bm.getPixel(x, y);
+            Log.v("Width, Height", String.valueOf(SkinApplication.capturedPhoto.getWidth()) + "," + String.valueOf(SkinApplication.capturedPhoto.getHeight()));
+            for(int x = 0; x < SkinApplication.capturedPhoto.getWidth(); x++) {
+                for (int y = 0; y < SkinApplication.capturedPhoto.getHeight(); y++) {
+                    int pixel = SkinApplication.capturedPhoto.getPixel(x, y);
 
                     switch(nMode) {
                         case CommonConsts.OIL_ANALYSIS:
@@ -559,7 +689,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                 });
 
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(15);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }

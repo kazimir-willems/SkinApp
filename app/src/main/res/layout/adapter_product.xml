@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_vertical"
-        android:layout_marginLeft="64dp">
+        android:layout_marginLeft="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,10 +29,10 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:gravity="right"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:text="产品名:"/>
 
             <TextView
@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:layout_weight="0.7"/>
+                android:layout_weight="0.8"/>
 
         </LinearLayout>
 
@@ -52,10 +52,10 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:gravity="right"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:text="产品优点:"/>
 
             <TextView
@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:layout_weight="0.7"/>
+                android:layout_weight="0.8"/>
 
         </LinearLayout>
 
@@ -75,10 +75,10 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:gravity="right"
                 android:textStyle="bold"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:text="产品说明:"/>
 
             <TextView
@@ -86,7 +86,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:layout_weight="0.7"/>
+                android:layout_weight="0.8"/>
 
         </LinearLayout>
 

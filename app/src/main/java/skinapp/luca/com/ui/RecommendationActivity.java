@@ -24,6 +24,7 @@ import skinapp.luca.com.R;
 import skinapp.luca.com.adapter.ProductAdapter;
 import skinapp.luca.com.event.ProductEvent;
 import skinapp.luca.com.model.ProductItem;
+import skinapp.luca.com.task.GetProductsTask;
 import skinapp.luca.com.vo.ProductsResponseVo;
 
 public class RecommendationActivity extends AppCompatActivity {
@@ -35,7 +36,7 @@ public class RecommendationActivity extends AppCompatActivity {
 
     private LinearLayoutManager mLinearLayoutManager;
 
-    private int type = 0;
+    private String type = "1";
 
     private ProgressDialog progressDialog;
 
@@ -47,6 +48,8 @@ public class RecommendationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recommendation);
 
         ButterKnife.bind(this);
+
+        type = getIntent().getStringExtra("type");
 
         productList.setHasFixedSize(true);
         mLinearLayoutManager = new LinearLayoutManager(RecommendationActivity.this);
@@ -78,7 +81,7 @@ public class RecommendationActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onClickHistoryEvent(ProductEvent event) {
+    public void onGetProductEvent(ProductEvent event) {
         hideProgressDialog();
         ProductsResponseVo responseVo = event.getResponse();
 
@@ -110,7 +113,10 @@ public class RecommendationActivity extends AppCompatActivity {
     }
 
     private void refreshItems() {
+        progressDialog.show();
 
+        GetProductsTask task = new GetProductsTask();
+        task.execute(type);
     }
 
     private void hideProgressDialog() {

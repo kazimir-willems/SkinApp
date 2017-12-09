@@ -161,9 +161,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="选择用户"
+                    android:visibility="gone"
                     android:layout_toRightOf="@id/btn_login"
                     android:layout_alignParentBottom="true"/>
             </RelativeLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -172,6 +175,14 @@
             android:layout_height="0dp"
             android:layout_weight="0.7"
             android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_qrcode"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/img_weixin_qr"/>
 
             <LinearLayout
                 android:id="@+id/info_layout"
@@ -185,6 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:text="男       35岁"
+                    android:visibility="gone"
                     android:textColor="@color/colorBlack"/>
 
                 <LinearLayout
@@ -208,6 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
+                        android:visibility="gone"
                         android:layout_marginLeft="8dp"
                         android:text="查看图表"/>
 
@@ -221,14 +234,15 @@
                     android:layout_marginRight="32dp"
                     android:layerType="software" />
 
-                <ListView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/review_list"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
-                    android:entries="@array/sample_review">
-
-                </ListView>
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    app:layoutManager="LinearLayoutManager"
+                    tools:listitem="@layout/adapter_history"/>
 
                 <RelativeLayout
                     android:id="@+id/chart_layout"
@@ -240,6 +254,7 @@
                         android:layout_width="320dp"
                         android:layout_height="240dp"
                         android:background="@color/colorWhite"
+                        android:visibility="gone"
                         android:layout_centerInParent="true"/>
                 </RelativeLayout>
             </LinearLayout>

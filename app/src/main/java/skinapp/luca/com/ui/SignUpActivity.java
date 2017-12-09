@@ -164,7 +164,9 @@ public class SignUpActivity extends AppCompatActivity {
         SkinApplication.bLogin = true;
         SkinApplication.loginID = loginID;
 
-        setResult(Activity.RESULT_CANCELED, returnIntent);
+        returnIntent.putExtra("loginID", loginID);
+
+        setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }
 

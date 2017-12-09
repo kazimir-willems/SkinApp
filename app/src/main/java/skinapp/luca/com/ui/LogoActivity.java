@@ -72,11 +72,11 @@ public class LogoActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if(position > 0) {
+                /*if(position > 0) {
                     btnNext.setVisibility(View.GONE);
                 } else {
                     btnNext.setVisibility(View.VISIBLE);
-                }
+                }*/
             }
 
             @Override
