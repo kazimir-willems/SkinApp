@@ -651,33 +651,37 @@ public class AnalyzeActivity extends AppCompatActivity {
             Log.v("Width, Height", String.valueOf(SkinApplication.capturedPhoto.getWidth()) + "," + String.valueOf(SkinApplication.capturedPhoto.getHeight()));
             for(int x = 0; x < SkinApplication.capturedPhoto.getWidth(); x++) {
                 for (int y = 0; y < SkinApplication.capturedPhoto.getHeight(); y++) {
-                    int pixel = SkinApplication.capturedPhoto.getPixel(x, y);
+                    try {
+                        int pixel = SkinApplication.capturedPhoto.getPixel(x, y);
 
-                    switch(nMode) {
-                        case CommonConsts.OIL_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToRed(pixel));
-                            break;
-                        case CommonConsts.MUSCLE_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToGreen(pixel));
-                            break;
-                        case CommonConsts.FIBER_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToCyan(pixel));
-                            break;
-                        case CommonConsts.FLEX_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToLightBlue(pixel));
-                            break;
-                        case CommonConsts.HAIRHOLE_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToDarkBlue(pixel));
-                            break;
-                        case CommonConsts.ZIT_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToRed(pixel));
-                            break;
-                        case CommonConsts.ACTION_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToRed(pixel));
-                            break;
-                        case CommonConsts.WATER_ANALYSIS:
-                            convertedBitmap.setPixel(x, y, convertToDarkBlue(pixel));
-                            break;
+                        switch(nMode) {
+                            case CommonConsts.OIL_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToRed(pixel));
+                                break;
+                            case CommonConsts.MUSCLE_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToGreen(pixel));
+                                break;
+                            case CommonConsts.FIBER_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToCyan(pixel));
+                                break;
+                            case CommonConsts.FLEX_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToLightBlue(pixel));
+                                break;
+                            case CommonConsts.HAIRHOLE_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToDarkBlue(pixel));
+                                break;
+                            case CommonConsts.ZIT_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToRed(pixel));
+                                break;
+                            case CommonConsts.ACTION_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToRed(pixel));
+                                break;
+                            case CommonConsts.WATER_ANALYSIS:
+                                convertedBitmap.setPixel(x, y, convertToDarkBlue(pixel));
+                                break;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                 }
