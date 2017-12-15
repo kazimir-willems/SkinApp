@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -15,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".ui.LogoActivity"
+            android:name=".ui.RegisterDeviceActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,9 +35,13 @@
         <activity
             android:name=".ui.AnalyzeActivity"
             android:screenOrientation="landscape" />
-        <activity android:name=".ui.RecommendationActivity"
-            android:screenOrientation="landscape"/>
-        <activity android:name=".ui.SignUpActivity"
+        <activity
+            android:name=".ui.RecommendationActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".ui.SignUpActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.LogoActivity"
             android:screenOrientation="landscape"></activity>
     </application>
 

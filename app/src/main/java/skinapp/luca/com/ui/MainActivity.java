@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cuboid.cuboidcirclebutton.CuboidButton;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,13 +59,18 @@ import skinapp.luca.com.adapter.HistoryAdapter;
 import skinapp.luca.com.adapter.ProductAdapter;
 import skinapp.luca.com.consts.CommonConsts;
 import skinapp.luca.com.event.GetHistoryEvent;
+import skinapp.luca.com.event.GetQREvent;
 import skinapp.luca.com.event.ProductEvent;
 import skinapp.luca.com.event.SignInEvent;
 import skinapp.luca.com.model.HistoryItem;
 import skinapp.luca.com.model.ProductItem;
 import skinapp.luca.com.task.GetHistoryTask;
+import skinapp.luca.com.task.GetQRTask;
 import skinapp.luca.com.task.SignInTask;
+import skinapp.luca.com.util.SharedPrefManager;
 import skinapp.luca.com.util.StringUtil;
+import skinapp.luca.com.util.URLManager;
+import skinapp.luca.com.vo.GetQRResponseVo;
 import skinapp.luca.com.vo.HistoryResponseVo;
 import skinapp.luca.com.vo.ProductsResponseVo;
 import skinapp.luca.com.vo.SignInResponseVo;
@@ -233,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new HistoryAdapter(MainActivity.this);
         reviewList.setAdapter(adapter);
+
+        getLoginQR();
     }
 
     @Override
@@ -273,6 +281,21 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             networkError();
+        }
+    }
+
+    @Subscribe
+    public void onGetQREvent(GetQREvent event) {
+        hideProgressDialog();
+        GetQRResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if(responseVo.res == 1) {
+                ImageLoader.getInstance().displayImage(responseVo.qrcode, ivQrCode);
+            } else {
+//                networkError();
+            }
+        } else {
+//            networkError();
         }
     }
 
@@ -331,21 +354,24 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_oil)
     void onClickBtnOil() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
 
         startActivity(intent);
-
-        /*Intent intent = new Intent(MainActivity.this, AnalyzeActivity.class);
-
-        intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
-
-        startActivity(intent);*/
     }
 
     @OnClick(R.id.btn_analyze_fiber)
     void onClickBtnFiber() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.FIBER_ANALYSIS);
@@ -355,6 +381,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_muscle)
     void onClickBtnMuscle() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.MUSCLE_ANALYSIS);
@@ -364,6 +395,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_flex)
     void onClickBtnFlex() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.FLEX_ANALYSIS);
@@ -373,6 +409,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_hairhole)
     void onClickBtnHairhole() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.HAIRHOLE_ANALYSIS);
@@ -382,6 +423,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_zit)
     void onClickBtnZit() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.ZIT_ANALYSIS);
@@ -391,6 +437,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_action)
     void onClickBtnAction() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.ACTION_ANALYSIS);
@@ -400,6 +451,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_analyze_water)
     void onClickBtnWater() {
+        if(!SkinApplication.bLogin) {
+            askLogin();
+            return;
+        }
+
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 
         intent.putExtra("type", CommonConsts.WATER_ANALYSIS);
@@ -438,6 +494,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void askLogin() {
+        Toast.makeText(MainActivity.this, "Login Please.", Toast.LENGTH_SHORT).show();
+    }
+
     private void networkError() {
         Toast.makeText(MainActivity.this, R.string.network_error, Toast.LENGTH_SHORT).show();
     }
@@ -458,6 +518,13 @@ public class MainActivity extends AppCompatActivity {
 
         GetHistoryTask task = new GetHistoryTask();
         task.execute(SkinApplication.loginID);
+    }
+
+    private void getLoginQR() {
+        progressDialog.show();
+
+        GetQRTask task = new GetQRTask();
+        task.execute(SharedPrefManager.getInstance(this).getDeviceID());
     }
 
     @Override

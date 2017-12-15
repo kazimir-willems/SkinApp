@@ -181,8 +181,7 @@
                 android:layout_width="240dp"
                 android:layout_height="240dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="32dp"
-                android:src="@mipmap/img_weixin_qr"/>
+                android:layout_marginTop="32dp"/>
 
             <LinearLayout
                 android:id="@+id/info_layout"

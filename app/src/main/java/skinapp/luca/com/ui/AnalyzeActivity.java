@@ -333,7 +333,7 @@ public class AnalyzeActivity extends AppCompatActivity {
         super.onPause();
 
         EventBus.getDefault().unregister(this);
-        System.gc();
+        /*System.gc();
 
         if(convertedBitmap != null) {
             convertedBitmap.recycle();
@@ -341,7 +341,7 @@ public class AnalyzeActivity extends AppCompatActivity {
 
         if(SkinApplication.capturedPhoto != null) {
             SkinApplication.capturedPhoto.recycle();
-        }
+        }*/
     }
 
     @Subscribe
@@ -403,8 +403,10 @@ public class AnalyzeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.v("Stop", "Trying to stop activity");
 
         if(convertedBitmap != null) {
             convertedBitmap.recycle();

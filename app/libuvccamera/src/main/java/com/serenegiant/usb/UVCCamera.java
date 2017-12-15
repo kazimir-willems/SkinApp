@@ -201,7 +201,8 @@ public class UVCCamera {
 			result = -1;
 		}
 		if (result != 0) {
-			throw new UnsupportedOperationException("open failed:result=" + result);
+    		return;
+//			throw new UnsupportedOperationException("open failed:result=" + result);
 		}
     	if (mNativePtr != 0 && TextUtils.isEmpty(mSupportedSize)) {
     		mSupportedSize = nativeGetSupportedSize(mNativePtr);

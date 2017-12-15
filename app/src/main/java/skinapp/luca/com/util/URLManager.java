@@ -33,4 +33,8 @@ public class URLManager {
     public static String getHistoryURL() {
         return HTTP_SERVER + SERVER_PREFIX + "web_api/GetHistory.php";
     }
+
+    public static String getQRURL() {
+        return "http://test.91tfs.com/Home/Tfsapi";
+    }
 }
