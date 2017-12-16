@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -21,6 +22,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -30,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -115,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AlertDialog informDialog;
 
-    private ArrayList<HistoryItem> historyItems = new ArrayList<>();
+    private String qrCodeURL;
 
-    @BindView(R.id.iv_qrcode)
-    ImageView ivQrCode;
+    private ArrayList<HistoryItem> historyItems = new ArrayList<>();
 
     private HistoryAdapter adapter;
     private LinearLayoutManager mLinearLayoutManager;
@@ -198,6 +201,36 @@ public class MainActivity extends AppCompatActivity {
                 edtLoginID = (EditText) informDialogView.findViewById(R.id.edt_id);
                 edtPassword = (EditText) informDialogView.findViewById(R.id.edt_password);
 
+                final ImageView ivQrCode = (ImageView) informDialogView.findViewById(R.id.iv_qrcode);
+                Spinner loginModeSpinner = (Spinner) informDialogView.findViewById(R.id.login_mode_spinner);
+                final LinearLayout loginLayout = (LinearLayout) informDialogView.findViewById(R.id.login_layout);
+
+                ImageLoader.getInstance().displayImage(qrCodeURL, ivQrCode);
+
+                loginModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        switch(i) {
+                            case 0:
+                                ivQrCode.setVisibility(View.GONE);
+                                loginLayout.setVisibility(View.VISIBLE);
+                                break;
+                            case 1:
+                                ivQrCode.setVisibility(View.VISIBLE);
+                                loginLayout.setVisibility(View.GONE);
+
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(edtLoginID.getWindowToken(), 0);
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
                 informDialog = new AlertDialog.Builder(MainActivity.this).create();
                 informDialog.setView(informDialogView);
                 informDialogView.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
@@ -269,10 +302,10 @@ public class MainActivity extends AppCompatActivity {
                 btnLogin.setText(loginID);
                 SkinApplication.bLogin = true;
                 SkinApplication.loginID = loginID;
+                SkinApplication.seed = loginID + System.currentTimeMillis();
 
                 informDialog.dismiss();
 
-                ivQrCode.setVisibility(View.GONE);
                 infoLayout.setVisibility(View.VISIBLE);
 
                 refreshHistory();
@@ -290,7 +323,8 @@ public class MainActivity extends AppCompatActivity {
         GetQRResponseVo responseVo = event.getResponse();
         if (responseVo != null) {
             if(responseVo.res == 1) {
-                ImageLoader.getInstance().displayImage(responseVo.qrcode, ivQrCode);
+                qrCodeURL = responseVo.qrcode;
+//                ImageLoader.getInstance().displayImage(responseVo.qrcode, ivQrCode);
             } else {
 //                networkError();
             }
@@ -312,34 +346,40 @@ public class MainActivity extends AppCompatActivity {
 
                 for(int i = 0; i < historyArray.length(); i++) {
                     JSONObject jsonHistoryItem = historyArray.getJSONObject(i);
+                    String date = jsonHistoryItem.getString("date");
+                    JSONArray jsonResultArray = jsonHistoryItem.getJSONArray("result");
 
-                    HistoryItem item = new HistoryItem();
+                    for(int j = 0; j < jsonResultArray.length(); j++) {
+                        JSONObject jsonResult = jsonResultArray.getJSONObject(j);
 
-                    int tempType = jsonHistoryItem.getInt("type");
-                    String strType = "";
-                    switch (tempType) {
-                        case CommonConsts.OIL_ANALYSIS:
-                            strType = "油份分析";
-                            break;
-                        case CommonConsts.MUSCLE_ANALYSIS:
-                            strType = "肌肤铅汞值";
-                            break;
-                        case CommonConsts.FIBER_ANALYSIS:
-                            strType = "胶原蛋白纤维";
-                            break;
-                        case CommonConsts.FLEX_ANALYSIS:
-                            strType = "肌肤弹性";
-                            break;
-                        case CommonConsts.WATER_ANALYSIS:
-                            strType = "水分含量";
-                            break;
+                        HistoryItem item = new HistoryItem();
+
+                        int tempType = jsonResult.getInt("type");
+                        String strType = "";
+                        switch (tempType) {
+                            case CommonConsts.OIL_ANALYSIS:
+                                strType = "油份分析";
+                                break;
+                            case CommonConsts.MUSCLE_ANALYSIS:
+                                strType = "肌肤铅汞值";
+                                break;
+                            case CommonConsts.FIBER_ANALYSIS:
+                                strType = "胶原蛋白纤维";
+                                break;
+                            case CommonConsts.FLEX_ANALYSIS:
+                                strType = "肌肤弹性";
+                                break;
+                            case CommonConsts.WATER_ANALYSIS:
+                                strType = "水分含量";
+                                break;
+                        }
+
+                        item.setType(strType);
+                        item.setValue(jsonResult.getString("value"));
+                        item.setDate(date);
+
+                        historyItems.add(item);
                     }
-
-                    item.setType(strType);
-                    item.setValue(jsonHistoryItem.getString("value"));
-                    item.setDate(jsonHistoryItem.getString("date").split(" ")[0]);
-
-                    historyItems.add(item);
                 }
 
                 adapter.addItems(historyItems);
@@ -535,7 +575,6 @@ public class MainActivity extends AppCompatActivity {
                 String loginID = data.getStringExtra("loginID");
 
                 btnLogin.setText(loginID);
-                ivQrCode.setVisibility(View.GONE);
                 infoLayout.setVisibility(View.VISIBLE);
 
                 refreshHistory();

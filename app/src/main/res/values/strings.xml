@@ -18,6 +18,11 @@
     <string name="incorrect_conf_password">Input Conf Password same as Password</string>
     <string name="database_error">Database Error</string>
 
+    <array name="login_mode">
+        <item>Normal</item>
+        <item>Weixin</item>
+    </array>
+
     <array name="sample_user">
         <item>金先生 男 35岁</item>
         <item>黄女士 女 20岁</item>

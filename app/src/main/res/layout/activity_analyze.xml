@@ -30,7 +30,7 @@
             android:layout_marginTop="32dp"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"
-            android:text="开始"
+            android:text="分析"
             android:textColor="@color/colorPrimary"
             app:cub_color="@color/colorGrey"/>
 
@@ -58,7 +58,7 @@
             android:layout_marginTop="32dp"
             android:layout_gravity="center_horizontal"
             android:textSize="20sp"
-            android:text="分析"
+            android:text="结论"
             android:textColor="@color/colorBlack"
             app:cub_color="@color/colorGrey"/>
 

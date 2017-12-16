@@ -28,164 +28,106 @@
             android:layout_weight="0.2"
             android:layout_gravity="center"
             android:gravity="right"
-            android:text="ID:"/>
+            android:text="Login Mode:"/>
 
-        <EditText
-            android:id="@+id/edt_id"
+        <Spinner
+            android:id="@+id/login_mode_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="0.8"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_gravity="center"
-            android:gravity="right"
-            android:text="Password:"/>
-
-        <EditText
-            android:id="@+id/edt_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="0.8"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_gravity="center"
-            android:gravity="right"
-            android:text="性别"/>
-
-        <RadioGroup
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:spinnerMode="dialog"
             android:layout_weight="0.8"
+            android:layout_marginLeft="16dp"
+            android:entries="@array/login_mode"></Spinner>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/male"
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="男"/>
-            <RadioButton
-                android:id="@+id/female"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:text="ID:"/>
+
+            <EditText
+                android:id="@+id/edt_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="女"/>
-        </RadioGroup>
+                android:layout_marginLeft="16dp"
+                android:layout_weight="0.8"/>
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:text="Password:"/>
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="0.8"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="登录"
+                android:layout_marginRight="16dp"
+                style="@style/ButtonDefault"/>
+
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="注册"
+                android:layout_marginLeft="16dp"
+                style="@style/ButtonDefault"/>
+
+        </LinearLayout>
     </LinearLayout>
 
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="right"
-            android:layout_weight="0.2"
-            android:text="生日"/>
-
-        <EditText
-            android:id="@+id/edt_birthday"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="0.8"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:layout_gravity="center"
-            android:gravity="right"
-            android:text="年龄"/>
-
-        <EditText
-            android:id="@+id/edt_age"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="0.8"
-            android:inputType="number"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center_horizontal"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
+    <ImageView
+        android:id="@+id/iv_qrcode"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center"
         android:visibility="gone"
-        android:text="自动登录"/>
+        android:layout_marginTop="32dp"/>
 
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp">
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="登录"
-            android:layout_marginRight="16dp"
-            style="@style/ButtonDefault"/>
-
-        <Button
-            android:id="@+id/btn_register"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="注册"
-            android:layout_marginLeft="16dp"
-            style="@style/ButtonDefault"/>
-
-    </LinearLayout>
 
 </LinearLayout>

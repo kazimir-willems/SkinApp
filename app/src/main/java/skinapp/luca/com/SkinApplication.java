@@ -18,6 +18,7 @@ public class SkinApplication extends Application {
     public static Bitmap capturedPhoto = null;
     public static boolean bLogin = false;
     public static String loginID = "";
+    public static String seed = "";
 
     public static String QR_KEY = "af074e8dc858c7e8fdd27bb14152f26d";
     public static String QR_ACT = "get_qrcode";

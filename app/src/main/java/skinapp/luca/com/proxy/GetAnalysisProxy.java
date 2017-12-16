@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
+import skinapp.luca.com.SkinApplication;
 import skinapp.luca.com.util.URLManager;
 import skinapp.luca.com.vo.GetAnalysisResponseVo;
 import skinapp.luca.com.vo.SignInResponseVo;
@@ -23,6 +24,7 @@ public class GetAnalysisProxy extends BaseProxy {
         formBuilder.add("type", type);
         formBuilder.add("value", value);
         formBuilder.add("loginid", loginId);
+        formBuilder.add("seed", SkinApplication.seed);
 
         RequestBody formBody = formBuilder.build();
 
