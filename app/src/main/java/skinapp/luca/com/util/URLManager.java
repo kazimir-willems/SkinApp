@@ -34,6 +34,14 @@ public class URLManager {
         return HTTP_SERVER + SERVER_PREFIX + "web_api/GetHistory.php";
     }
 
+    public static String getOpenIDURL() {
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/GetOpenId.php";
+    }
+
+    public static String getConfirmOpenIDURL() {
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/ConfirmOpenID.php";
+    }
+
     public static String getQRURL() {
         return "http://test.91tfs.com/Home/Tfsapi";
     }

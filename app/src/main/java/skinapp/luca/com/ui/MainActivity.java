@@ -5,9 +5,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,17 +65,21 @@ import skinapp.luca.com.adapter.HistoryAdapter;
 import skinapp.luca.com.adapter.ProductAdapter;
 import skinapp.luca.com.consts.CommonConsts;
 import skinapp.luca.com.event.GetHistoryEvent;
+import skinapp.luca.com.event.GetOpenIDEvent;
 import skinapp.luca.com.event.GetQREvent;
 import skinapp.luca.com.event.ProductEvent;
 import skinapp.luca.com.event.SignInEvent;
 import skinapp.luca.com.model.HistoryItem;
 import skinapp.luca.com.model.ProductItem;
+import skinapp.luca.com.task.ConfirmOpenIDTask;
 import skinapp.luca.com.task.GetHistoryTask;
+import skinapp.luca.com.task.GetOpenIDTask;
 import skinapp.luca.com.task.GetQRTask;
 import skinapp.luca.com.task.SignInTask;
 import skinapp.luca.com.util.SharedPrefManager;
 import skinapp.luca.com.util.StringUtil;
 import skinapp.luca.com.util.URLManager;
+import skinapp.luca.com.vo.GetOpenIDResponseVo;
 import skinapp.luca.com.vo.GetQRResponseVo;
 import skinapp.luca.com.vo.HistoryResponseVo;
 import skinapp.luca.com.vo.ProductsResponseVo;
@@ -125,6 +131,17 @@ public class MainActivity extends AppCompatActivity {
 
     private HistoryAdapter adapter;
     private LinearLayoutManager mLinearLayoutManager;
+
+    private Handler openIDHandler = new Handler();
+    private Runnable openIDRunnable = new Runnable() {
+        @Override
+        public void run() {
+            GetOpenIDTask task = new GetOpenIDTask();
+            task.execute(SharedPrefManager.getInstance(MainActivity.this).getDeviceID());
+        }
+    };
+
+    private boolean bRunningOpenID = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,6 +238,9 @@ public class MainActivity extends AppCompatActivity {
 
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(edtLoginID.getWindowToken(), 0);
+
+                                openIDHandler.post(openIDRunnable);
+                                bRunningOpenID = true;
                                 break;
                         }
                     }
@@ -260,6 +280,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                informDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        if(bRunningOpenID) {
+                            bRunningOpenID = false;
+                        }
+                    }
+                });
+
                 informDialog.show();
             }
         });
@@ -291,6 +320,49 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onGetOpenIDEvent(GetOpenIDEvent event) {
+        hideProgressDialog();
+        GetOpenIDResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if(responseVo.success == 1) {
+                /*if(SkinApplication.loginID.equals(responseVo.openid)) {
+                    if(bRunningOpenID) {
+                        openIDHandler.post(openIDRunnable);
+                    }
+                    return;
+                } else {*/
+                    btnLogin.setText(responseVo.openid);
+                    SkinApplication.bLogin = true;
+                    SkinApplication.loginID = responseVo.openid;
+                    SkinApplication.seed = responseVo.openid + System.currentTimeMillis();
+
+                    startConfirmOpenID(responseVo.id, responseVo.openid);
+
+                    bRunningOpenID = false;
+
+                    informDialog.dismiss();
+
+                    infoLayout.setVisibility(View.VISIBLE);
+
+                    refreshHistory();
+//                }
+            } else {
+                if(responseVo.error_code == 2) {
+                    if(bRunningOpenID) {
+                        openIDHandler.post(openIDRunnable);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    private void startConfirmOpenID(int id, String openid) {
+        ConfirmOpenIDTask task = new ConfirmOpenIDTask();
+        task.execute(String.valueOf(id), openid);
     }
 
     @Subscribe
