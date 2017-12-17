@@ -442,7 +442,7 @@ public class AnalyzeActivity extends AppCompatActivity {
     }
 
     private int convertToRed(int pixel) {
-        int ret = Color.rgb(255, 0, 0);
+        int ret = Color.rgb(0, 255, 255);
 
         int redValue = Color.red(pixel);
         int blueValue = Color.blue(pixel);
