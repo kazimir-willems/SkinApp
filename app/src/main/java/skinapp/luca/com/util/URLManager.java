@@ -31,7 +31,7 @@ public class URLManager {
     }
 
     public static String getHistoryURL() {
-        return HTTP_SERVER + SERVER_PREFIX + "web_api/GetHistory.php";
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/GetLastRecords.php";
     }
 
     public static String getOpenIDURL() {
@@ -40,6 +40,10 @@ public class URLManager {
 
     public static String getConfirmOpenIDURL() {
         return HTTP_SERVER + SERVER_PREFIX + "web_api/ConfirmOpenID.php";
+    }
+
+    public static String getCheckDeviceIDURL() {
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/CheckDeviceID.php";
     }
 
     public static String getQRURL() {

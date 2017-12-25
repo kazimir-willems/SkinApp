@@ -17,6 +17,7 @@
     <string name="incorrect_password">Incorrect Password</string>
     <string name="incorrect_conf_password">Input Conf Password same as Password</string>
     <string name="database_error">Database Error</string>
+    <string name="invalid_device">无效装置编码。</string>
 
     <array name="login_mode">
         <item>Normal</item>

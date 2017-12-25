@@ -37,6 +37,7 @@ import skinapp.luca.com.consts.CommonConsts;
 import skinapp.luca.com.event.GetAnalysisEvent;
 import skinapp.luca.com.event.SignInEvent;
 import skinapp.luca.com.task.GetAnalysisTask;
+import skinapp.luca.com.util.SharedPrefManager;
 import skinapp.luca.com.vo.GetAnalysisResponseVo;
 import skinapp.luca.com.vo.SignInResponseVo;
 
@@ -628,7 +629,7 @@ public class AnalyzeActivity extends AppCompatActivity {
         progressDialog.show();
 
         GetAnalysisTask task = new GetAnalysisTask();
-        task.execute(String.valueOf(type), String.valueOf(anaResult), SkinApplication.loginID);
+        task.execute(String.valueOf(type), String.valueOf(anaResult), SkinApplication.loginID, SharedPrefManager.getInstance(this).getDeviceID());
     }
 
     private void hideProgressDialog() {
@@ -648,7 +649,7 @@ public class AnalyzeActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Integer... mode) {
             nMode = mode[0];
-            convertedBitmap = SkinApplication.capturedPhoto.copy(Bitmap.Config.RGB_565, true);
+            convertedBitmap = SkinApplication.capturedPhoto.copy(Bitmap.Config.ARGB_8888, true);
             nPixelCnt = 0;
             Log.v("Width, Height", String.valueOf(SkinApplication.capturedPhoto.getWidth()) + "," + String.valueOf(SkinApplication.capturedPhoto.getHeight()));
             for(int x = 0; x < SkinApplication.capturedPhoto.getWidth(); x++) {
@@ -695,7 +696,7 @@ public class AnalyzeActivity extends AppCompatActivity {
                 });
 
                 try {
-                    Thread.sleep(15);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }

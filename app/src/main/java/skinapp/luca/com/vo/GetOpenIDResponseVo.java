@@ -7,4 +7,5 @@ package skinapp.luca.com.vo;
 public class GetOpenIDResponseVo extends BaseResponseVo{
     public int id;
     public String openid;
+    public String image_url;
 }

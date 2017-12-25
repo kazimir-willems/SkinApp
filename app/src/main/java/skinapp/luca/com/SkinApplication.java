@@ -22,6 +22,7 @@ public class SkinApplication extends Application {
 
     public static String QR_KEY = "af074e8dc858c7e8fdd27bb14152f26d";
     public static String QR_ACT = "get_qrcode";
+    public static String QR_FILE_PATH = "QR.jpg";
 
     /*@Override
     protected void attachBaseContext(Context context) {

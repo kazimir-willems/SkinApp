@@ -24,8 +24,9 @@ public class GetAnalysisTask extends AsyncTask<String, Void, GetAnalysisResponse
         String type = params[0];
         String value = params[1];
         String loginId = params[2];
+        String deviceId = params[3];
         try {
-            final GetAnalysisResponseVo responseVo = simpleProxy.run(type, value, loginId);
+            final GetAnalysisResponseVo responseVo = simpleProxy.run(type, value, loginId, deviceId);
 
             return responseVo;
         } catch (Exception e) {

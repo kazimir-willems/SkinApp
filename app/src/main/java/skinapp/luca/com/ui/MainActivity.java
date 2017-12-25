@@ -7,8 +7,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +51,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -55,6 +64,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
@@ -68,6 +78,7 @@ import skinapp.luca.com.event.GetHistoryEvent;
 import skinapp.luca.com.event.GetOpenIDEvent;
 import skinapp.luca.com.event.GetQREvent;
 import skinapp.luca.com.event.ProductEvent;
+import skinapp.luca.com.event.SaveQREvent;
 import skinapp.luca.com.event.SignInEvent;
 import skinapp.luca.com.model.HistoryItem;
 import skinapp.luca.com.model.ProductItem;
@@ -75,6 +86,7 @@ import skinapp.luca.com.task.ConfirmOpenIDTask;
 import skinapp.luca.com.task.GetHistoryTask;
 import skinapp.luca.com.task.GetOpenIDTask;
 import skinapp.luca.com.task.GetQRTask;
+import skinapp.luca.com.task.SaveQRTask;
 import skinapp.luca.com.task.SignInTask;
 import skinapp.luca.com.util.SharedPrefManager;
 import skinapp.luca.com.util.StringUtil;
@@ -94,10 +106,11 @@ public class MainActivity extends AppCompatActivity {
     private int mDay;
 
     private CuboidButton btnLogin;
-    private TextView btnUserList;
     private TextView tvUserInfo;
     private EditText edtLoginID;
     private EditText edtPassword;
+    private TextView tvIDLogin;
+    private TextView tvWeixinLogin;
 
     private RadioButton male;
     private RadioButton female;
@@ -143,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean bRunningOpenID = false;
 
+    @BindView(R.id.iv_photo)
+    CircleImageView ivPhoto;
+    @BindView(R.id.tv_openid)
+    TextView tvOpenId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         btnLogin = (CuboidButton) findViewById(R.id.btn_login);
-        btnUserList = (TextView) findViewById(R.id.btn_user_list);
         tvUserInfo = (TextView) findViewById(R.id.tv_user_info);
 
         mainLayout = (LinearLayout) findViewById(R.id.main_layout);
@@ -205,10 +222,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SpannableString mySpannableString = new SpannableString("选择用户");
-        mySpannableString.setSpan(new UnderlineSpan(), 0, mySpannableString.length(), 0);
-        btnUserList.setText(mySpannableString);
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,36 +231,43 @@ public class MainActivity extends AppCompatActivity {
                 edtLoginID = (EditText) informDialogView.findViewById(R.id.edt_id);
                 edtPassword = (EditText) informDialogView.findViewById(R.id.edt_password);
 
+                tvIDLogin = (TextView) informDialogView.findViewById(R.id.tv_id_login);
+                tvWeixinLogin = (TextView) informDialogView.findViewById(R.id.tv_weixin_login);
+
                 final ImageView ivQrCode = (ImageView) informDialogView.findViewById(R.id.iv_qrcode);
-                Spinner loginModeSpinner = (Spinner) informDialogView.findViewById(R.id.login_mode_spinner);
                 final LinearLayout loginLayout = (LinearLayout) informDialogView.findViewById(R.id.login_layout);
 
-                ImageLoader.getInstance().displayImage(qrCodeURL, ivQrCode);
+                File imgFile = new File(getFilesDir(), SkinApplication.QR_FILE_PATH);
 
-                loginModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                if(imgFile.exists()){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+                    ivQrCode.setImageBitmap(myBitmap);
+                }
+
+                tvIDLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        switch(i) {
-                            case 0:
-                                ivQrCode.setVisibility(View.GONE);
-                                loginLayout.setVisibility(View.VISIBLE);
-                                break;
-                            case 1:
-                                ivQrCode.setVisibility(View.VISIBLE);
-                                loginLayout.setVisibility(View.GONE);
-
-                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(edtLoginID.getWindowToken(), 0);
-
-                                openIDHandler.post(openIDRunnable);
-                                bRunningOpenID = true;
-                                break;
-                        }
+                    public void onClick(View view) {
+                        tvIDLogin.setTypeface(null, Typeface.BOLD);
+                        tvWeixinLogin.setTypeface(null, Typeface.NORMAL);
+                        ivQrCode.setVisibility(View.GONE);
+                        loginLayout.setVisibility(View.VISIBLE);
                     }
+                });
 
+                tvWeixinLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
+                    public void onClick(View view) {
+                        tvWeixinLogin.setTypeface(null, Typeface.BOLD);
+                        tvIDLogin.setTypeface(null, Typeface.NORMAL);
+                        ivQrCode.setVisibility(View.VISIBLE);
+                        loginLayout.setVisibility(View.GONE);
 
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(edtLoginID.getWindowToken(), 0);
+
+                        openIDHandler.post(openIDRunnable);
+                        bRunningOpenID = true;
                     }
                 });
 
@@ -302,7 +322,8 @@ public class MainActivity extends AppCompatActivity {
         adapter = new HistoryAdapter(MainActivity.this);
         reviewList.setAdapter(adapter);
 
-        getLoginQR();
+        if(SharedPrefManager.getInstance(this).getFirstQR())
+            getLoginQR();
     }
 
     @Override
@@ -334,10 +355,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return;
                 } else {*/
-                    btnLogin.setText(responseVo.openid);
+                    tvOpenId.setText(responseVo.openid);
+                    tvOpenId.setVisibility(View.VISIBLE);
+                    btnLogin.setVisibility(View.GONE);
+                    ivPhoto.setVisibility(View.VISIBLE);
                     SkinApplication.bLogin = true;
                     SkinApplication.loginID = responseVo.openid;
                     SkinApplication.seed = responseVo.openid + System.currentTimeMillis();
+
+                    new DownLoadImageTask().execute(responseVo.image_url);
 
                     startConfirmOpenID(responseVo.id, responseVo.openid);
 
@@ -372,6 +398,10 @@ public class MainActivity extends AppCompatActivity {
         if (responseVo != null) {
             if(responseVo.success == 1) {
                 btnLogin.setText(loginID);
+
+                ivPhoto.setVisibility(View.GONE);
+                tvOpenId.setVisibility(View.GONE);
+                btnLogin.setVisibility(View.VISIBLE);
                 SkinApplication.bLogin = true;
                 SkinApplication.loginID = loginID;
                 SkinApplication.seed = loginID + System.currentTimeMillis();
@@ -396,6 +426,12 @@ public class MainActivity extends AppCompatActivity {
         if (responseVo != null) {
             if(responseVo.res == 1) {
                 qrCodeURL = responseVo.qrcode;
+
+                progressDialog.show();
+
+                SaveQRTask task = new SaveQRTask(MainActivity.this);
+
+                task.execute(qrCodeURL);
 //                ImageLoader.getInstance().displayImage(responseVo.qrcode, ivQrCode);
             } else {
 //                networkError();
@@ -403,6 +439,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
 //            networkError();
         }
+    }
+
+    @Subscribe
+    public void onSaveQREvent(SaveQREvent event) {
+        hideProgressDialog();
+        SharedPrefManager.getInstance(this).saveFirstQR(false);
     }
 
     @Subscribe
@@ -418,40 +460,35 @@ public class MainActivity extends AppCompatActivity {
 
                 for(int i = 0; i < historyArray.length(); i++) {
                     JSONObject jsonHistoryItem = historyArray.getJSONObject(i);
-                    String date = jsonHistoryItem.getString("date");
-                    JSONArray jsonResultArray = jsonHistoryItem.getJSONArray("result");
+                    String date = jsonHistoryItem.getString("created");
 
-                    for(int j = 0; j < jsonResultArray.length(); j++) {
-                        JSONObject jsonResult = jsonResultArray.getJSONObject(j);
+                    HistoryItem item = new HistoryItem();
 
-                        HistoryItem item = new HistoryItem();
-
-                        int tempType = jsonResult.getInt("type");
-                        String strType = "";
-                        switch (tempType) {
-                            case CommonConsts.OIL_ANALYSIS:
-                                strType = "油份分析";
-                                break;
-                            case CommonConsts.MUSCLE_ANALYSIS:
-                                strType = "肌肤铅汞值";
-                                break;
-                            case CommonConsts.FIBER_ANALYSIS:
-                                strType = "胶原蛋白纤维";
-                                break;
-                            case CommonConsts.FLEX_ANALYSIS:
-                                strType = "肌肤弹性";
-                                break;
-                            case CommonConsts.WATER_ANALYSIS:
-                                strType = "水分含量";
-                                break;
-                        }
-
-                        item.setType(strType);
-                        item.setValue(jsonResult.getString("value"));
-                        item.setDate(date);
-
-                        historyItems.add(item);
+                    int tempType = jsonHistoryItem.getInt("type");
+                    String strType = "";
+                    switch (tempType) {
+                        case CommonConsts.OIL_ANALYSIS:
+                            strType = "油份分析";
+                            break;
+                        case CommonConsts.MUSCLE_ANALYSIS:
+                            strType = "肌肤铅汞值";
+                            break;
+                        case CommonConsts.FIBER_ANALYSIS:
+                            strType = "胶原蛋白纤维";
+                            break;
+                        case CommonConsts.FLEX_ANALYSIS:
+                            strType = "肌肤弹性";
+                            break;
+                        case CommonConsts.WATER_ANALYSIS:
+                            strType = "水分含量";
+                            break;
                     }
+
+                    item.setType(strType);
+                    item.setValue(jsonHistoryItem.getString("value"));
+                    item.setDate(date);
+
+                    historyItems.add(item);
                 }
 
                 adapter.addItems(historyItems);
@@ -475,6 +512,11 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("type", CommonConsts.OIL_ANALYSIS);
 
         startActivity(intent);
+    }
+
+    @OnClick(R.id.iv_photo)
+    void onClickPhoto() {
+        btnLogin.performClick();
     }
 
     @OnClick(R.id.btn_analyze_fiber)
@@ -607,7 +649,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void askLogin() {
-        Toast.makeText(MainActivity.this, "Login Please.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "请登录一下。", Toast.LENGTH_SHORT).show();
     }
 
     private void networkError() {
@@ -654,6 +696,58 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
+        }
+    }
+
+    public static void saveImage(String imageUrl, String destinationFile) throws IOException {
+        imageUrl = imageUrl.replaceAll("'\'", "");
+        Log.v("URL", imageUrl);
+        URL url = new URL(imageUrl);
+        InputStream is = url.openStream();
+        OutputStream os = new FileOutputStream(destinationFile);
+
+        byte[] b = new byte[2048];
+        int length;
+
+        while ((length = is.read(b)) != -1) {
+            os.write(b, 0, length);
+        }
+
+        is.close();
+        os.close();
+    }
+
+    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+
+        public DownLoadImageTask(){
+        }
+
+        /*
+            doInBackground(Params... params)
+                Override this method to perform a computation on a background thread.
+         */
+        protected Bitmap doInBackground(String...urls){
+            String urlOfImage = urls[0];
+            Bitmap logo = null;
+            try{
+                InputStream is = new URL(urlOfImage).openStream();
+                /*
+                    decodeStream(InputStream is)
+                        Decode an input stream into a bitmap.
+                 */
+                logo = BitmapFactory.decodeStream(is);
+            }catch(Exception e){ // Catch the download exception
+                e.printStackTrace();
+            }
+            return logo;
+        }
+
+        /*
+            onPostExecute(Result result)
+                Runs on the UI thread after doInBackground(Params...).
+         */
+        protected void onPostExecute(Bitmap result){
+            ivPhoto.setImageBitmap(result);
         }
     }
 }

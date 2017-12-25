@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "SkinAppPreference";
     private static final String TAG_FIRST_RUN = "first_run";
+    private static final String TAG_FIRST_QR = "first_qr";
     private static final String TAG_DEVICE_ID = "device_id";
 
     private static SharedPrefManager mInstance;
@@ -47,5 +48,19 @@ public class SharedPrefManager {
     public boolean getFirstLogin(){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return  sharedPreferences.getBoolean(TAG_FIRST_RUN, true);
+    }
+
+    public boolean saveFirstQR(boolean bFirst){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(TAG_FIRST_QR, bFirst);
+        editor.apply();
+        return true;
+    }
+
+    //this method will fetch the device token from shared preferences
+    public boolean getFirstQR(){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return  sharedPreferences.getBoolean(TAG_FIRST_QR, true);
     }
 }

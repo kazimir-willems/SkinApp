@@ -6,42 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:background="@mipmap/img_background"
+    android:background="@mipmap/img_logo1"
     tools:context=".ui.LogoActivity">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_centerHorizontal="true"
-            android:layout_width="720dp"
-            android:layout_height="480dp"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/pager"
-            android:layout_marginLeft="96dp">
-
-            <Button
-                android:id="@+id/btn_next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="跳过"
-                style="@style/ButtonDefault"/>
-
-        </RelativeLayout>
-    </RelativeLayout>
-
-    <com.bhargavms.podslider.PodSlider
-        android:id="@+id/pod_slider"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        app:numberOfPods="4"
-        app:podColor="#EEEEEE"
-        app:selectedPodColor="@color/colorAccent"
-        app:mediumCircleColor="#00ff0000"
-        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

@@ -18,13 +18,14 @@ import skinapp.luca.com.vo.SignInResponseVo;
 
 public class GetAnalysisProxy extends BaseProxy {
 
-    public GetAnalysisResponseVo run(String type, String value, String loginId) throws IOException {
+    public GetAnalysisResponseVo run(String type, String value, String loginId, String deviceId) throws IOException {
         GetAnalysisResponseVo requestVo = new GetAnalysisResponseVo();
         FormBody.Builder formBuilder = new FormBody.Builder();
         formBuilder.add("type", type);
         formBuilder.add("value", value);
         formBuilder.add("loginid", loginId);
         formBuilder.add("seed", SkinApplication.seed);
+        formBuilder.add("device_id", deviceId);
 
         RequestBody formBody = formBuilder.build();
 

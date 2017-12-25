@@ -1,19 +1,31 @@
 package skinapp.luca.com.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import skinapp.luca.com.R;
+import skinapp.luca.com.SkinApplication;
+import skinapp.luca.com.event.CheckDeviceEvent;
+import skinapp.luca.com.event.GetOpenIDEvent;
+import skinapp.luca.com.task.CheckDeviceIDTask;
 import skinapp.luca.com.util.SharedPrefManager;
 import skinapp.luca.com.util.StringUtil;
+import skinapp.luca.com.vo.CheckDeviceResponseVo;
+import skinapp.luca.com.vo.GetOpenIDResponseVo;
 
 public class RegisterDeviceActivity extends AppCompatActivity {
 
@@ -26,6 +38,7 @@ public class RegisterDeviceActivity extends AppCompatActivity {
     private String confirmDeviceID;
 
     private Animation shake;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +52,35 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         }
 
         shake = AnimationUtils.loadAnimation(RegisterDeviceActivity.this, R.anim.edittext_shake);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getResources().getString(R.string.str_processing));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onCheckDeviceEvent(CheckDeviceEvent event) {
+        hideProgressDialog();
+        CheckDeviceResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if(responseVo.success == 1) {
+                startLogoActivity();
+            } else {
+                invalidDeviceID();
+            }
+        }
     }
 
     @OnClick(R.id.btn_register)
@@ -53,7 +95,14 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         SharedPrefManager.getInstance(this).saveDeviceID(deviceID);
         SharedPrefManager.getInstance(this).saveFirstLogin(false);
 
-        startLogoActivity();
+        checkDevice();
+    }
+
+    private void checkDevice() {
+        progressDialog.show();
+
+        CheckDeviceIDTask task = new CheckDeviceIDTask();
+        task.execute(deviceID);
     }
 
     private void startLogoActivity() {
@@ -93,6 +142,15 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         if (target.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
+    }
+
+    private void hideProgressDialog() {
+        if(progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    private void invalidDeviceID() {
+        Toast.makeText(RegisterDeviceActivity.this, R.string.invalid_device, Toast.LENGTH_SHORT).show();
     }
 
 }
