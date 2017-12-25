@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -105,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
     private int mMonth;
     private int mDay;
 
-    private CuboidButton btnLogin;
+    private ImageButton imgBtnLogin;
+    private Button btnLogin;
+
     private TextView tvUserInfo;
     private EditText edtLoginID;
     private EditText edtPassword;
@@ -168,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        btnLogin = (CuboidButton) findViewById(R.id.btn_login);
+        imgBtnLogin = (ImageButton) findViewById(R.id.img_btn_login);
+        btnLogin = (Button) findViewById(R.id.btn_login);
         tvUserInfo = (TextView) findViewById(R.id.tv_user_info);
 
         mainLayout = (LinearLayout) findViewById(R.id.main_layout);
@@ -223,6 +227,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                imgBtnLogin.performClick();
+            }
+        });
+
+        imgBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LayoutInflater factory = LayoutInflater.from(MainActivity.this);
@@ -355,8 +366,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return;
                 } else {*/
-                    tvOpenId.setText(responseVo.openid);
-                    tvOpenId.setVisibility(View.VISIBLE);
+//                    tvOpenId.setText(responseVo.openid);
+//                    tvOpenId.setVisibility(View.VISIBLE);
                     btnLogin.setVisibility(View.GONE);
                     ivPhoto.setVisibility(View.VISIBLE);
                     SkinApplication.bLogin = true;
@@ -402,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
                 ivPhoto.setVisibility(View.GONE);
                 tvOpenId.setVisibility(View.GONE);
                 btnLogin.setVisibility(View.VISIBLE);
+                imgBtnLogin.setVisibility(View.GONE);
                 SkinApplication.bLogin = true;
                 SkinApplication.loginID = loginID;
                 SkinApplication.seed = loginID + System.currentTimeMillis();

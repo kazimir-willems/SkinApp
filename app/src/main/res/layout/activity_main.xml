@@ -8,126 +8,102 @@
     android:background="@mipmap/img_background"
     tools:context="skinapp.luca.com.ui.MainActivity">
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.6">
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:paddingLeft="128dp"
+            android:paddingRight="@dimen/horizontal_margin"
+            android:layout_weight="0.6"
+            android:gravity="center_vertical"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
 
                 <Button
                     android:id="@+id/btn_analyze_oil"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:text="油份分析"/>
 
                 <Button
                     android:id="@+id/btn_analyze_muscle"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="32dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:text="肌肤铅汞值"/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
-
                 <Button
                     android:id="@+id/btn_analyze_fiber"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="64dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:text="胶原蛋白纤维"/>
 
                 <Button
                     android:id="@+id/btn_analyze_flex"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="96dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:text="肌肤弹性"/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
-
                 <Button
                     android:id="@+id/btn_analyze_hairhole"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
-                    android:textSize="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
+                    android:textSize="8dp"
                     android:visibility="gone"
                     android:text="毛孔状况"/>
 
                 <Button
                     android:id="@+id/btn_analyze_zit"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:visibility="gone"
                     android:text="痤疮状况"/>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
-
                 <Button
                     android:id="@+id/btn_analyze_action"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:visibility="gone"
                     android:text="肌肤敏感度"/>
 
                 <Button
                     android:id="@+id/btn_analyze_water"
-                    android:layout_width="172dp"
-                    android:layout_height="172dp"
-                    android:layout_margin="32dp"
-                    style="@style/ButtonDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="128dp"
+                    android:textColor="@color/colorBlack"
+                    android:background="@mipmap/img_ana_btn"
                     android:textSize="24sp"
                     android:text="水分含量"/>
 
-            </LinearLayout>
-
         </LinearLayout>
-
-    </ScrollView>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -144,17 +120,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.cuboid.cuboidcirclebutton.CuboidButton
-                    android:id="@+id/btn_login"
+                <ImageButton
+                    android:id="@+id/img_btn_login"
                     android:layout_width="128dp"
                     android:layout_height="128dp"
                     android:layout_marginTop="32dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:background="@mipmap/img_login_btn"/>
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/login_button"
                     android:textSize="24sp"
-                    android:text="登录"
+                    android:visibility="gone"
                     android:textColor="@color/colorWhite"
-                    app:cub_color="@color/colorPrimary"/>
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
