@@ -5,5 +5,5 @@ package skinapp.luca.com.vo;
  */
 
 public class CheckDeviceResponseVo extends BaseResponseVo{
-
+    public int qr_flag;
 }

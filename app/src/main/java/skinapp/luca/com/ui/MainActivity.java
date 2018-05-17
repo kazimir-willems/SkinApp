@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -52,8 +53,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -75,28 +83,34 @@ import skinapp.luca.com.SkinApplication;
 import skinapp.luca.com.adapter.HistoryAdapter;
 import skinapp.luca.com.adapter.ProductAdapter;
 import skinapp.luca.com.consts.CommonConsts;
+import skinapp.luca.com.event.GetDeviceQREvent;
 import skinapp.luca.com.event.GetHistoryEvent;
 import skinapp.luca.com.event.GetOpenIDEvent;
 import skinapp.luca.com.event.GetQREvent;
 import skinapp.luca.com.event.ProductEvent;
 import skinapp.luca.com.event.SaveQREvent;
 import skinapp.luca.com.event.SignInEvent;
+import skinapp.luca.com.event.UploadQREvent;
 import skinapp.luca.com.model.HistoryItem;
 import skinapp.luca.com.model.ProductItem;
 import skinapp.luca.com.task.ConfirmOpenIDTask;
+import skinapp.luca.com.task.GetDeviceQRTask;
 import skinapp.luca.com.task.GetHistoryTask;
 import skinapp.luca.com.task.GetOpenIDTask;
 import skinapp.luca.com.task.GetQRTask;
 import skinapp.luca.com.task.SaveQRTask;
 import skinapp.luca.com.task.SignInTask;
+import skinapp.luca.com.task.UploadQRTask;
 import skinapp.luca.com.util.SharedPrefManager;
 import skinapp.luca.com.util.StringUtil;
 import skinapp.luca.com.util.URLManager;
+import skinapp.luca.com.vo.GetDeviceQRResponseVo;
 import skinapp.luca.com.vo.GetOpenIDResponseVo;
 import skinapp.luca.com.vo.GetQRResponseVo;
 import skinapp.luca.com.vo.HistoryResponseVo;
 import skinapp.luca.com.vo.ProductsResponseVo;
 import skinapp.luca.com.vo.SignInResponseVo;
+import skinapp.luca.com.vo.UploadQRResponseVo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -147,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     private HistoryAdapter adapter;
     private LinearLayoutManager mLinearLayoutManager;
+    private ImageView ivQrCode;
 
     private Handler openIDHandler = new Handler();
     private Runnable openIDRunnable = new Runnable() {
@@ -245,16 +260,16 @@ public class MainActivity extends AppCompatActivity {
                 tvIDLogin = (TextView) informDialogView.findViewById(R.id.tv_id_login);
                 tvWeixinLogin = (TextView) informDialogView.findViewById(R.id.tv_weixin_login);
 
-                final ImageView ivQrCode = (ImageView) informDialogView.findViewById(R.id.iv_qrcode);
+                ivQrCode = (ImageView) informDialogView.findViewById(R.id.iv_qrcode);
                 final LinearLayout loginLayout = (LinearLayout) informDialogView.findViewById(R.id.login_layout);
 
-                File imgFile = new File(getFilesDir(), SkinApplication.QR_FILE_PATH);
+                /*File imgFile = new File(getFilesDir(), SkinApplication.QR_FILE_PATH);
 
                 if(imgFile.exists()){
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
                     ivQrCode.setImageBitmap(myBitmap);
-                }
+                }*/
 
                 tvIDLogin.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -273,6 +288,10 @@ public class MainActivity extends AppCompatActivity {
                         tvIDLogin.setTypeface(null, Typeface.NORMAL);
                         ivQrCode.setVisibility(View.VISIBLE);
                         loginLayout.setVisibility(View.GONE);
+
+                        progressDialog.show();
+                        GetDeviceQRTask task = new GetDeviceQRTask();
+                        task.execute(SharedPrefManager.getInstance(MainActivity.this).getDeviceID());
 
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(edtLoginID.getWindowToken(), 0);
@@ -454,9 +473,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
+    public void onUploadQREvent(UploadQREvent event) {
+        hideProgressDialog();
+        UploadQRResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if (responseVo.success == 1) {
+                SharedPrefManager.getInstance(this).saveFirstQR(false);
+            }
+        }
+    }
+
+    @Subscribe
+    public void onGetDeviceQREvent(GetDeviceQREvent event) {
+        hideProgressDialog();
+        GetDeviceQRResponseVo responseVo = event.getResponse();
+        if (responseVo != null) {
+            if (responseVo.success == 1) {
+                String imgString = responseVo.img;
+
+                Bitmap qrBitmap = StringToBitMap(imgString);
+                ivQrCode.setImageBitmap(qrBitmap);
+            }
+        }
+    }
+
+    @Subscribe
     public void onSaveQREvent(SaveQREvent event) {
         hideProgressDialog();
-        SharedPrefManager.getInstance(this).saveFirstQR(false);
+
+        File imgFile = new File(getFilesDir(), SkinApplication.QR_FILE_PATH);
+
+        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+        String imgText = getStringImage(myBitmap);
+
+        UploadQRTask task = new UploadQRTask();
+        task.execute(SharedPrefManager.getInstance(this).getDeviceID(), imgText);
     }
 
     @Subscribe
@@ -472,35 +524,40 @@ public class MainActivity extends AppCompatActivity {
 
                 for(int i = 0; i < historyArray.length(); i++) {
                     JSONObject jsonHistoryItem = historyArray.getJSONObject(i);
-                    String date = jsonHistoryItem.getString("created");
+                    String date = jsonHistoryItem.getString("date");
+                    JSONArray jsonResultArray = jsonHistoryItem.getJSONArray("result");
 
-                    HistoryItem item = new HistoryItem();
+                    for(int j = 0; j < jsonResultArray.length(); j++) {
+                        JSONObject jsonResult = jsonResultArray.getJSONObject(j);
 
-                    int tempType = jsonHistoryItem.getInt("type");
-                    String strType = "";
-                    switch (tempType) {
-                        case CommonConsts.OIL_ANALYSIS:
-                            strType = "油份分析";
-                            break;
-                        case CommonConsts.MUSCLE_ANALYSIS:
-                            strType = "肌肤铅汞值";
-                            break;
-                        case CommonConsts.FIBER_ANALYSIS:
-                            strType = "胶原蛋白纤维";
-                            break;
-                        case CommonConsts.FLEX_ANALYSIS:
-                            strType = "肌肤弹性";
-                            break;
-                        case CommonConsts.WATER_ANALYSIS:
-                            strType = "水分含量";
-                            break;
+                        HistoryItem item = new HistoryItem();
+
+                        int tempType = jsonResult.getInt("type");
+                        String strType = "";
+                        switch (tempType) {
+                            case CommonConsts.OIL_ANALYSIS:
+                                strType = "油份分析";
+                                break;
+                            case CommonConsts.MUSCLE_ANALYSIS:
+                                strType = "肌肤铅汞值";
+                                break;
+                            case CommonConsts.FIBER_ANALYSIS:
+                                strType = "胶原蛋白纤维";
+                                break;
+                            case CommonConsts.FLEX_ANALYSIS:
+                                strType = "肌肤弹性";
+                                break;
+                            case CommonConsts.WATER_ANALYSIS:
+                                strType = "水分含量";
+                                break;
+                        }
+
+                        item.setType(strType);
+                        item.setValue(jsonResult.getString("value"));
+                        item.setDate(date);
+
+                        historyItems.add(item);
                     }
-
-                    item.setType(strType);
-                    item.setValue(jsonHistoryItem.getString("value"));
-                    item.setDate(date);
-
-                    historyItems.add(item);
                 }
 
                 adapter.addItems(historyItems);
@@ -760,6 +817,25 @@ public class MainActivity extends AppCompatActivity {
          */
         protected void onPostExecute(Bitmap result){
             ivPhoto.setImageBitmap(result);
+        }
+    }
+
+    public String getStringImage(Bitmap bmp){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
+
+    public Bitmap StringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        }catch(Exception e){
+            e.getMessage();
+            return null;
         }
     }
 }

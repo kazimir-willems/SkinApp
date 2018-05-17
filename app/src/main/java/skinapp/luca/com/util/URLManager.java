@@ -7,8 +7,8 @@ package skinapp.luca.com.util;
 public class URLManager {
 
 //    private static final String HTTP_SERVER = "http://192.168.5.144/";
-    private static final String SERVER_PREFIX = "EZM_Work/";
-    private static final String HTTP_SERVER = "http://54.64.191.2/";
+    private static final String SERVER_PREFIX = "tfs_skin/";
+    private static final String HTTP_SERVER = "http://218.245.1.214/";
 
     public static String getSignInURL() {
         return HTTP_SERVER + SERVER_PREFIX + "web_api/Login.php";
@@ -31,7 +31,7 @@ public class URLManager {
     }
 
     public static String getHistoryURL() {
-        return HTTP_SERVER + SERVER_PREFIX + "web_api/GetLastRecords.php";
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/GetHistory.php";
     }
 
     public static String getOpenIDURL() {
@@ -44,6 +44,14 @@ public class URLManager {
 
     public static String getCheckDeviceIDURL() {
         return HTTP_SERVER + SERVER_PREFIX + "web_api/CheckDeviceID.php";
+    }
+
+    public static String getUploadQRURL() {
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/UploadQR.php";
+    }
+
+    public static String getDeviceQRURL() {
+        return HTTP_SERVER + SERVER_PREFIX + "web_api/GetDeviceQR.php";
     }
 
     public static String getQRURL() {

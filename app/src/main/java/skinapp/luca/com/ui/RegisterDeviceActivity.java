@@ -76,6 +76,9 @@ public class RegisterDeviceActivity extends AppCompatActivity {
         CheckDeviceResponseVo responseVo = event.getResponse();
         if (responseVo != null) {
             if(responseVo.success == 1) {
+                if(responseVo.qr_flag == 1) {
+                    SharedPrefManager.getInstance(this).saveFirstQR(false);
+                }
                 startLogoActivity();
             } else {
                 invalidDeviceID();
