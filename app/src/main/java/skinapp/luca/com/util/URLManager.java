@@ -7,8 +7,12 @@ package skinapp.luca.com.util;
 public class URLManager {
 
 //    private static final String HTTP_SERVER = "http://192.168.5.144/";
-    private static final String SERVER_PREFIX = "tfs_skin/";
-    private static final String HTTP_SERVER = "http://218.245.1.214/";
+    /*private static final String SERVER_PREFIX = "tfs_skin/";
+    private static final String HTTP_SERVER = "http://218.245.1.214/";*/
+
+    private static final String SERVER_PREFIX = "EZM_Work/";
+    //    private static final String HTTP_SERVER = "http://54.64.191.2/";
+    private static final String HTTP_SERVER = "http://58.18.115.138:1117/";
 
     public static String getSignInURL() {
         return HTTP_SERVER + SERVER_PREFIX + "web_api/Login.php";

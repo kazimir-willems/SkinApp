@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.cuboid.cuboidcirclebutton.CuboidButton;
 
+import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
@@ -568,6 +569,33 @@ public class AnalyzeActivity extends AppCompatActivity {
                 } else {
                     ret = temp;
                 }
+
+                if(ret < 3) {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5};
+                    double[] discreteProbabilities = new double[]{0.07, 0.14, 0.21, 0.21, 0.14, 0.21};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 3 + rand;
+                } else if (ret >= 3 && ret < 45) {
+                    ret = ret;
+                } else {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+                    double[] discreteProbabilities = new double[]{0.06, 0.12, 0.12, 0.18, 0.12, 0.12, 0.12, 0.12, 0.06};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 45 - rand;
+                }
+
                 break;
             case CommonConsts.MUSCLE_ANALYSIS:
                 if(temp > 3) {
@@ -580,6 +608,33 @@ public class AnalyzeActivity extends AppCompatActivity {
                 } else {
                     ret = temp;
                 }
+
+                if(ret < 2) {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4};
+                    double[] discreteProbabilities = new double[]{0.1, 0.1, 0.3, 0.3, 0.2};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 2 + rand;
+                } else if (ret >= 2 && ret < 20) {
+                    ret = ret;
+                } else {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5, 6};
+                    double[] discreteProbabilities = new double[]{0.07, 0.14, 0.14, 0.14, 0.14, 0.21, 0.21};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 20 - rand;
+                }
+
                 break;
             case CommonConsts.FIBER_ANALYSIS:
                 if(temp < 8) {
@@ -592,6 +647,32 @@ public class AnalyzeActivity extends AppCompatActivity {
                 } else {
                     ret = temp;
                 }
+
+                if(ret < 30) {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5, 6, 7};
+                    double[] discreteProbabilities = new double[]{0.07, 0.07, 0.14, 0.21, 0.21, 0.14, 0.14, 0.07};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 30 + rand;
+                } else if (ret >= 30 && ret < 72) {
+                    ret = ret;
+                } else {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+                    double[] discreteProbabilities = new double[]{0.07, 0.07, 0.14, 0.14, 0.14, 0.14, 0.14, 0.14, 0.07};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 72 - rand;
+                }
                 break;
             case CommonConsts.FLEX_ANALYSIS:
                 if(temp < 15) {
@@ -602,6 +683,32 @@ public class AnalyzeActivity extends AppCompatActivity {
                     ret = 71;
                 } else {
                     ret = temp;
+                }
+
+                if(ret < 3) {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5};
+                    double[] discreteProbabilities = new double[]{0.08, 0.08, 0.08, 0.16, 0.32, 0.24};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 3 + rand;
+                } else if (ret >= 3 && ret < 70) {
+                    ret = ret;
+                } else {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+                    double[] discreteProbabilities = new double[]{0.05, 0.05, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.15, 0.1, 0.1, 0.1, 0.05};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 70 - rand;
                 }
                 break;
             case CommonConsts.WATER_ANALYSIS:
@@ -614,6 +721,33 @@ public class AnalyzeActivity extends AppCompatActivity {
                 } else {
                     ret = temp;
                 }
+
+                if(ret < 10) {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5};
+                    double[] discreteProbabilities = new double[]{0.07, 0.14, 0.21, 0.21, 0.14, 0.21};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 10 + rand;
+                } else if (ret >= 10 && ret < 70) {
+                    ret = ret;
+                } else {
+                    int[] numsToGenerate = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+                    double[] discreteProbabilities = new double[]{0.05, 0.05, 0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.15, 0.1, 0.1, 0.1, 0.05};
+
+                    EnumeratedIntegerDistribution distribution =
+                            new EnumeratedIntegerDistribution(numsToGenerate, discreteProbabilities);
+
+                    int numSamples = 1;
+                    int rand = distribution.sample(numSamples)[0];
+
+                    ret = 70 - rand;
+                }
+
                 break;
             default:
                 break;
